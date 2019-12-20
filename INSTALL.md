@@ -17,6 +17,7 @@ env\Scripts\activate
 pip install django
 pip install djangorestframework
 pip install mysqlclient
+pip install django-cors-headers
 ```
 
 ## Generate key

@@ -5,11 +5,13 @@ from rest_framework.authtoken.models import Token
 
 
 class detailsUser(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get(self, request):
-        user = Token.objects.get(key=request.headers.get('Authentication'))
+    def post(self, request):
+        tok = request.headers.get('Authorization')
+        print(tok[6:len(tok)+1])
+        user = Token.objects.get(key=tok[6:len(tok)])
         content = {
-            'groups': user.created
+            'FirstName': user.user.first_name,
+            'LastName': user.user.last_name,
+            'Email': user.user.email,
         }
         return Response(content)
