@@ -52,11 +52,11 @@ python manage.py makemigrations mysite
 python manage.py migrate
 ```
 ## Entering Group and User data
-Open django shell used command ''' python manage.py shell '''
+Open django shell used command ` python manage.py shell `
 and write 
-'''
+```
 exec(open('generateData.py').read())
-'''
+```
 
 ## Start up a 
 Before starting up python server start up DB server (for exampele XAMPP).
