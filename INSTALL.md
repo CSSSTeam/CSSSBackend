@@ -51,7 +51,7 @@ Create an initial migration for models, and sync the database for the first time
 python manage.py makemigrations mysite
 python manage.py migrate
 ```
-##Entering Group and User data
+## Entering Group and User data
 Open django shell used command ''' python manage.py shell '''
 and write 
 '''
