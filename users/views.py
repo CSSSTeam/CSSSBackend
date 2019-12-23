@@ -1,15 +1,20 @@
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+from users.permission import canOperatingInfo
+from users.utility import getUser
 
 
 class detailsUser(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [canOperatingInfo]
 
     def get(self, request):
-        user = Token.objects.get(key=request.headers.get('Authentication'))
+        user = getUser(request)
         content = {
-            'groups': user.created
+            'FirstName': user.first_name,
+            'LastName': user.last_name,
+            'Email': user.email,
         }
         return Response(content)
+
+    def post(selfself, request):
+        return Response(request.headers)

@@ -17,6 +17,7 @@ env\Scripts\activate
 pip install django
 pip install djangorestframework
 pip install mysqlclient
+pip install django-cors-headers
 ```
 
 ## Generate key
@@ -50,7 +51,12 @@ Create an initial migration for models, and sync the database for the first time
 python manage.py makemigrations mysite
 python manage.py migrate
 ```
-
+## Entering Group and User data
+Open django shell used command ` python manage.py shell `
+and write 
+```
+exec(open('generateData.py').read())
+```
 
 ## Start up a 
 Before starting up python server start up DB server (for exampele XAMPP).
