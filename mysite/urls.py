@@ -4,6 +4,8 @@ from users import views as viewsUsers
 from fileSystem import views as viewsFile
 from rest_framework.authtoken.views import ObtainAuthToken
 from users import urls as usersUrls
+from fileSystem import urls as fileUrls
+
 router = routers.DefaultRouter()
 router.register(r'files', viewsFile.fileViewSet)
 router.register(r'types', viewsFile.typesViewSet)
@@ -13,5 +15,6 @@ router.register(r'types', viewsFile.typesViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', ObtainAuthToken.as_view()),
-    path('user/', include(usersUrls))
+    path('user/', include(usersUrls)),
+    path('file/', include(fileUrls))
 ]

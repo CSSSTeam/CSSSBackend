@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-#this function ceretwe path to file
+#this function create path to file
 def cerate_path(Type):
     return '\\'+str(Type.name)
 
