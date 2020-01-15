@@ -4,7 +4,7 @@ from fileSystem.models import file, types
 class fileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = file
-        fields = dir(file)
+        fields = ['name','description','fileType','upload','date','author']
 
 class typesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

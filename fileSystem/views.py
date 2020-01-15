@@ -1,10 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from users.permission import canOperatingInfo
 from fileSystem.serializers import fileSerializer, typesSerializer
 from fileSystem.models import file, types
-
 
 
 
@@ -26,40 +26,41 @@ class typesViewSet(viewsets.ModelViewSet):
     
 ## in work
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from .forms import UploadFileForm
-from .models import file
+#from django.http import HttpResponseRedirect
+#from django.shortcuts import render
+#from .forms import UploadFileForm
 
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            instance = file(file_field=request.FILES['file'])
-            instance.save()
-            return HttpResponseRedirect('/success/url/')
-    else:
-        form = UploadFileForm()
-    return render(request, 'upload.html', {'form': form})
+#def upload_file(request):
+#    if request.method == 'POST':
+#        form = UploadFileForm(request.POST, request.FILES)
+#        if form.is_valid():
+#            instance = file(file_field=request.FILES['file'])
+#            instance.save()
+#            return HttpResponseRedirect('/success/url/')
+#    else:
+#        form = UploadFileForm()
+#    return render(request, 'upload.html', {'form': form})
 
-
-class showFlie(APIView):
-    
-    def get(self, request):
-        File = fileSerializer().Meta.model
-        print(request.headers)
-        content = {
-            'file': self.getFileUrl(File),
-            'typ': File.types
-            
-        }
 
         
-    def getFileUrl(self,File):
-        l=[]
-        for f in File:
-            l.append(f.GetUrl(f))
-        return l
-            
-        return Response(content)
+class GetFile(APIView):
+    def get(self, request, pk):
+
+        try:
+            files = file.objects.get(pk=pk)
+        except file.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+        if request.method == 'GET':
+            serializer =  fileSerializer(files)
+            return Response(seria)
+        elif request.method == 'POST':
+            serializer =  fileSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 

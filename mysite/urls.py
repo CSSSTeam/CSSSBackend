@@ -1,10 +1,10 @@
 from django.urls import include, path
 from rest_framework import routers
-from users import views as viewsUsers
-from fileSystem import views as viewsFile
 from rest_framework.authtoken.views import ObtainAuthToken
+from users import views as viewsUsers
 from users import urls as usersUrls
 from fileSystem import urls as fileUrls
+from fileSystem import views as viewsFile
 
 router = routers.DefaultRouter()
 router.register(r'files', viewsFile.fileViewSet)
