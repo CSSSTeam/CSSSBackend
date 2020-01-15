@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from os import path
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,8 +24,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
-SECRET_KEY_FILE = open("mysite/key.txt", "r")
-SECRET_KEY = SECRET_KEY_FILE.read()
+if os.path.exists("./mysite/key.txt"): 
+    SECRET_KEY_FILE = open("./mysite/key.txt", "r")
+    SECRET_KEY = SECRET_KEY_FILE.read()
+    SECRET_KEY_FILE.close()
+else:
+    SECRET_KEY_FILE = open("./mysite/key.txt", "w+")
+    SECRET_KEY_FILE.write(get_random_secret_key())
+    SECRET_KEY_FILE.close()
+    SECRET_KEY_FILE = open("./mysite/key.txt", "r")
+    SECRET_KEY = SECRET_KEY_FILE.read()
+    SECRET_KEY_FILE.close()
 
 
 
