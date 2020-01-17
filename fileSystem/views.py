@@ -43,6 +43,22 @@ class typesViewSet(viewsets.ModelViewSet):
 
 
         
+class GetType(APIView):
+    def get(self, request, pk):
+
+        try:
+            type = types.objects.get(pk=pk)
+        except types.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+        if request.method == 'GET':
+            serializer =  typesSerializer(type)
+            return Response(seria)
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class GetFile(APIView):
     def get(self, request, pk):
 
@@ -55,7 +71,16 @@ class GetFile(APIView):
         if request.method == 'GET':
             serializer =  fileSerializer(files)
             return Response(seria)
-        elif request.method == 'POST':
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class PostFile(APIView):
+    def post(self, request):
+
+        file.objects.all()
+
+        if request.method == 'POST':
             serializer =  fileSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group, Permission
+from fileSystem.models import file, types
 
 
 def createUser(username, password, first_name="", last_name="", email="", groups=[]):
@@ -10,6 +11,7 @@ def createUser(username, password, first_name="", last_name="", email="", groups
     for group in groups:
         user.groups.add(group)
     user.save()
+    return user
 
 
 def createGroup(name, permissions=[]):
@@ -20,6 +22,19 @@ def createGroup(name, permissions=[]):
     group.save()
     return group
 
+def createFile(name,description,fileType,upload,author):
+    files = file.objects.get_or_create(name=name)[0]
+    files.description = description
+    files.upload = upload
+    files.fileType = fileType
+    files.author = author
+    files.save()
+    return files
+
+def createType(name):
+    type = types.objects.get_or_create(name=name)[0]
+    type.save()
+    return type
 
 studentPermissions = ["change_user"]
 treasurerPermissions = studentPermissions+["add_user"]
@@ -34,5 +49,9 @@ englishGr1 = createGroup(name="English Group 1")
 englishGr2 = createGroup(name="English Group 2")
 germanyGr1 = createGroup(name="Germany Group 1")
 germanyGr2 = createGroup(name="Germany Group 2")
-createUser(username="admin", password="admin", first_name="admin", last_name="toor",
+user=createUser(username="admin", password="admin", first_name="admin", last_name="toor",
            email="admin@admin.com", groups=[admin, englishGr1])
+
+type=createType("a")
+createFile("bfc","bc",type,"dx",user)
+

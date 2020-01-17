@@ -12,7 +12,7 @@ class file (models.Model):
     fileType = models.ForeignKey('types', on_delete=models.CASCADE, default="")
     upload = models.FileField(upload_to=cerate_path(fileType))
     date = models.DateTimeField(blank=True, null=True, default=timezone.now)
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE, default="")
     
     #this function return url to file
     def getUrl(self):
