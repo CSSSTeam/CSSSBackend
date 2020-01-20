@@ -16,5 +16,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/', ObtainAuthToken.as_view()),
     path('user/', include(usersUrls)),
-    path('file/', include(fileUrls))
+    path('fileSystem/', include(fileUrls))
 ]

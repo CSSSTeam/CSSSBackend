@@ -53,8 +53,8 @@ class GetType(APIView):
 
 
         if request.method == 'GET':
-            serializer =  typesSerializer(type)
-            return Response(seria)
+            serializer =  typesSerializer(type, context={'request': request})
+            return Response(serializer.data)
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -69,8 +69,8 @@ class GetFile(APIView):
 
 
         if request.method == 'GET':
-            serializer =  fileSerializer(files)
-            return Response(seria)
+            serializer =  fileSerializer(files, context={'request': request})
+            return Response(serializer.data)
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -81,7 +81,7 @@ class PostFile(APIView):
         file.objects.all()
 
         if request.method == 'POST':
-            serializer =  fileSerializer(data=request.data)
+            serializer =  fileSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

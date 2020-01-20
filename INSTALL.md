@@ -20,15 +20,6 @@ pip install mysqlclient
 pip install django-cors-headers
 ```
 
-## Generate key
-Generate a new private key, and put it in ./server/mysite/key.txt
-```
-django-admin shell
->>> from django.core.management.utils import get_random_secret_key
->>> get_random_secret_key()
-'[GENERATED KEY]'
->>>
-```
 
 ## Set up database
 Set up data to contect to the database (We will use mysql database.) in ./server/mysite/settings.py
