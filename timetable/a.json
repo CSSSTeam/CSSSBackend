@@ -1,0 +1,110 @@
+{
+  "monday": [
+    [
+      {
+        "name": "historia",
+        "group": -1
+      }
+    ],
+    [
+      {
+        "name": "niemicki",
+        "group": 0
+      },
+      {
+        "name": "angielski",
+        "group": 1
+      }
+    ],
+    [
+      {
+        "name": "historia",
+        "group": -1
+      }
+    ]
+  ],
+  "tuesday": [
+    [
+      {
+        "name": "as",
+        "group": -1
+      }
+    ],
+    [
+      {
+        "name": "angileski",
+        "group": 0
+      },
+      {
+        "name": "mizyka",
+        "group": 1
+      },
+      {
+        "name":"plastyka",
+        "group": 2
+      }
+    ],
+    [
+      {
+        "name": "polski",
+        "group": -1
+      }
+    ]
+  ],
+  "webnesday": [
+    [
+      {
+        "name": "awdvs",
+        "group": -1
+      }
+    ],
+    [
+      {
+        "name": "angilkijuhgfeski",
+        "group": 0
+      },
+      {
+        "name": "mizadyka",
+        "group": 1
+      },
+      {
+        "name":"56",
+        "group": 2
+      }
+    ],
+    [
+      {
+        "name": "09",
+        "group": -1
+      }
+    ]
+  ],
+  "thursday": [
+    [
+      {
+        "name": "awdvs",
+        "group": -1
+      }
+    ],
+    [
+      {
+        "name": "angilkijuhgfeski",
+        "group": 0
+      }
+    ]
+  ],
+  "friday": [
+    [
+      {
+        "name": "domek",
+        "group": -1
+      }
+    ],
+    [
+      {
+        "name": "domeczek",
+        "group": 0
+      }
+    ]
+  ]
+}
