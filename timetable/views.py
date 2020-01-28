@@ -11,10 +11,26 @@ from timetable.models import dayOfWeek
 
 # Create your views here.
 @api_view(['GET'])
-def getTimeTable(request):
-    pass
+def getTimetable(request):
+    response = {"period": []}
+    hourLessons = HourLesson.objects.all().order_by("number")
+    for period in hourLessons:
+        response["period"].append({'start': period.start, 'end': period.end})
+
+    for day in dayOfWeek.choises():
+        dayLessons = []
+        lessonsData = Lesson.objects.filter(day=day[0])
+        for hour in hourLessons:
+            lesson = []
+            lessonData = lessonsData.filter(hour=hour)
+            for l in lessonData:
+                lesson.append({"name": l.name, "group": l.group})
+            dayLessons.append(lesson)
+        response[day[1].lower()] = dayLessons
+    return Response(response)
 
 
+# TODO(n2one): create poemision for setTimetable
 @api_view(['POST'])
 def setTimetable(request):
     timetable = json.loads(request.body)
@@ -23,6 +39,7 @@ def setTimetable(request):
             Lesson.objects.filter(day=day[0]).delete()
             setTimetable4day(timetable[day[1].lower()], day)
     return Response("OK")
+
 
 def setTimetable4day(lessonsOfDay, day):
     num_lesson = 0
@@ -34,18 +51,19 @@ def setTimetable4day(lessonsOfDay, day):
         num_lesson = num_lesson + 1
 
 
+# TODO(n2one):create permisions for setHourLessons
 @api_view(['POST'])
-def setHourLesson(request):
+def setHourLessons(request):
     body = json.loads(request.body)
     HourLesson.objects.all().delete()
     num_lesson = 0
     for obj in body:
-        createHourLesson(obj, num_lesson)
+        createHourLessons(obj, num_lesson)
         num_lesson = num_lesson + 1
     return Response("OK")
 
 
-def createHourLesson(lessonObject, num_lesson):
+def createHourLessons(lessonObject, num_lesson):
     lesson = HourLesson(number=num_lesson, start=lessonObject['start'], end=lessonObject['end'])
     lesson.save()
     return lesson
