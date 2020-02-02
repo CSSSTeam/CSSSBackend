@@ -21,18 +21,20 @@ def createGroup(name, permissions=[]):
     return group
 
 
-studentPermissions = ["change_user"]
-treasurerPermissions = studentPermissions+["add_user"]
-
+studentPermissions = ["change_user", "view_lesson"]
+treasurerPermissions = studentPermissions
+moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson"]
 student = createGroup(name="Student", permissions=studentPermissions)
 treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
 president = createGroup(name="President")
 vicePresident = createGroup(name="Vice President")
-moderator = createGroup(name="Moderator")
+moderator = createGroup(name="Moderator", permissions=moderatorPermissions)
 admin = createGroup(name="Admin")
 englishGr1 = createGroup(name="English Group 1")
 englishGr2 = createGroup(name="English Group 2")
 germanyGr1 = createGroup(name="Germany Group 1")
 germanyGr2 = createGroup(name="Germany Group 2")
 createUser(username="admin", password="admin", first_name="admin", last_name="toor",
-           email="admin@admin.com", groups=[admin, englishGr1])
+           email="admin@admin.com", groups=[admin, englishGr1, germanyGr2])
+createUser(username="moderator", password="moderator", first_name="Steve", last_name="Jobs",
+           email="stevejobs@apple.com", groups=[moderator, englishGr1, germanyGr1])
