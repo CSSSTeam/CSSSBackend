@@ -24,6 +24,8 @@ class HourLesson(models.Model):
 
 class Lesson(models.Model):
     name = models.TextField()
+    classroom = models.TextField(default="")
+    teacher = models.TextField(default="")
     day = models.IntegerField(choices=dayOfWeek.choises(), default=dayOfWeek.MONDAY)
     hour = models.ForeignKey(HourLesson, on_delete=models.CASCADE, default=None)
     group = models.IntegerField(default=-1)
