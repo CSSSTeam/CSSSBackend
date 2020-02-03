@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User, Group, Permission
+from fileSystem.models import file, types
+from django.utils import timezone
 
 
 def createUser(username, password, first_name="", last_name="", email="", groups=[]):
@@ -10,6 +12,7 @@ def createUser(username, password, first_name="", last_name="", email="", groups
     for group in groups:
         user.groups.add(group)
     user.save()
+    return user
 
 
 def createGroup(name, permissions=[]):
@@ -20,6 +23,18 @@ def createGroup(name, permissions=[]):
     group.save()
     return group
 
+def createFile(name="",description="",fileType="",upload="",author=""):
+    files = file.objects.get_or_create(name=name,fileType=fileType,author=author)[0]
+    files.description = description
+    files.upload = upload
+    files.date = timezone.now()
+    files.save()
+    return files
+
+def createType(name=""):
+    type = types.objects.get_or_create(name=name)[0]
+    type.save()
+    return type
 
 studentPermissions = ["change_user", "view_lesson"]
 treasurerPermissions = studentPermissions
@@ -34,7 +49,12 @@ englishGr1 = createGroup(name="English Group 1")
 englishGr2 = createGroup(name="English Group 2")
 germanyGr1 = createGroup(name="Germany Group 1")
 germanyGr2 = createGroup(name="Germany Group 2")
-createUser(username="admin", password="admin", first_name="admin", last_name="toor",
+
+user=createUser(username="admin", password="admin", first_name="admin", last_name="toor",
            email="admin@admin.com", groups=[admin, englishGr1, germanyGr2])
 createUser(username="moderator", password="moderator", first_name="Steve", last_name="Jobs",
            email="stevejobs@apple.com", groups=[moderator, englishGr1, germanyGr1])
+
+type=createType("ak")
+createFile("bfc","bc",type,"dx")
+

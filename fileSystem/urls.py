@@ -1,8 +1,11 @@
 from django.urls import include, path
-from fileSystem.views import showFlie
+from fileSystem.views import getFile, getAllFile, postFile, getType, getAllType, postType
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('filedetal/', showFlie.as_view()),
+    path('file/<int:pk>/', getFile),
+    path('file/', getAllFile),
+    path('type/<int:pk>/', getType),
+    path('type/', getAllType),
+    path('file/add/', postFile),
+    path('type/add/', postType),
 ]
