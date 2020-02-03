@@ -39,7 +39,7 @@ DATABASES = {
 ## Migration and sync the database
 Create an initial migration for models, and sync the database for the first time.
 ```
-python manage.py makemigrations mysite
+python manage.py makemigrations
 python manage.py migrate
 ```
 ## Entering Group and User data
