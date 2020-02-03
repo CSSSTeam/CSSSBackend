@@ -112,7 +112,6 @@ def getAllFile(request, format=None):
 
 
 #------------------------POST-------------------------
-
 @api_view(['POST'])
 
 def postFile(request, format=None):
@@ -122,23 +121,26 @@ def postFile(request, format=None):
 
     if request.method == 'POST':
         f = request.FILES['upload']
-        SaveFile(settings.MEDIA_ROOT+str(request.data['upload']),f)
-        serializer = fileSerializer(data=request.data, context={'request': request})
         
+        request.data['upload']=SaveFile(settings.MEDIA_ROOT+str(request.data['upload']),f)
+        
+        serializer = fileSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+# Save file
 def SaveFile(name,f):
 
     with open(name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+    return name
         
 
 @api_view(['POST'])
