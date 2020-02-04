@@ -18,7 +18,7 @@ router.register(r'types', viewsFile.typesViewSet)
 urlpatterns = [
     path('auth/', ObtainAuthToken.as_view()),
     path('user/', include(usersUrls)),
-    path('fileSystem/', include(fileUrls))
+    path('fileSystem/', include(fileUrls)),
     path('timetable/', include(timetableURLs)),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
