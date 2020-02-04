@@ -7,11 +7,6 @@ from users import views as viewsUsers
 from users import urls as usersUrls
 from fileSystem import urls as fileUrls
 from timetable import urls as timetableURLs
-from fileSystem import views as viewsFile
-
-router = routers.DefaultRouter()
-router.register(r'files', viewsFile.fileViewSet)
-router.register(r'types', viewsFile.typesViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
