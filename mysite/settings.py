@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'fileSystem',
     'users',
     'timetable',
+    'events'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
