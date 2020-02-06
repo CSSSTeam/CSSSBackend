@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezonehttps://github.com/CSSSTeam/CSSSBackend/pull/8/conflicts
+from django.utils import timezone
 
 class types (models.Model):
     name = models.CharField(max_length=50)

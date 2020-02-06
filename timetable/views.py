@@ -53,14 +53,14 @@ def setTimetable4day(lessonsOfDay, day):
         if lessonsData is None:
             continue
         for lessonData in lessonsData:
-            if "name" in lessonData or lessonData['name'] == "":
+            if (not "name" in lessonData) or lessonData['name'] == "":
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not name")
-            if "teacher" in lessonData or lessonData['teacher'] == "":
+            if (not "teacher" in lessonData) or lessonData['teacher'] == "":
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not teacher")
-            if "classroom" in lessonData or lessonData['classroom'] == "":
+            if (not "classroom" in lessonData) or lessonData['classroom'] == "":
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not classroom")
-            if "group" in lessonData or (
-                    (not lessonsData['group'] == -1) and Group.objects.filter(id=lessonData['group']) is None):
+            if (not "group" in lessonData) or (
+                    (str(lessonData['group']) == "-1") and Group.objects.filter(id=lessonData['group']) is None):
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has group that does not exist")
             lesson = Lesson(name=lessonData["name"], day=day[0], hour=hour, teacher=lessonData["teacher"],
                             classroom=lessonData["classroom"],
@@ -78,16 +78,15 @@ def setHourLessons(request):
         try:
             createHourLessons(obj, num_lesson)
         except Exception as exeption:
-            print(exeption)
             return Response({"error": str(exeption)}, status=status.HTTP_400_BAD_REQUEST)
         num_lesson = num_lesson + 1
     return Response(status=status.HTTP_201_CREATED)
 
 
 def createHourLessons(lessonObject, num_lesson):
-    if "start" in lessonObject or lessonObject['start'] == "":
+    if (not "start" in lessonObject) or lessonObject['start'] == "":
         raise Exception(f"Hour {num_lesson + 1} has not start")
-    if "end" in lessonObject or lessonObject['end'] == "":
+    if (not "end" in lessonObject) or lessonObject['end'] == "":
         raise Exception(f"Hour {num_lesson + 1} has not end")
 
     lesson = HourLesson(number=num_lesson, start=lessonObject['start'], end=lessonObject['end'])
