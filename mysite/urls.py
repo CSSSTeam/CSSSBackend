@@ -5,7 +5,8 @@ from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 from users import views as viewsUsers
 from users import urls as usersUrls
-from fileSystem import urls as fileUrls
+from fileSystem import urls as fileSystemUrls
+from events import urls as eventsUrls
 from timetable import urls as timetableURLs
 
 # Wire up our API using automatic URL routing.
@@ -13,7 +14,8 @@ from timetable import urls as timetableURLs
 urlpatterns = [
     path('auth/', ObtainAuthToken.as_view()),
     path('user/', include(usersUrls)),
-    path('fileSystem/', include(fileUrls)),
+    path('fileSystem/', include(fileSystemUrls)),
+    path('events/', include(eventsUrls)),
     path('timetable/', include(timetableURLs)),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
