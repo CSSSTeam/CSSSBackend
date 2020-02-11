@@ -6,7 +6,7 @@ from rest_framework import status
 from django.conf import settings
 
 from fileSystem.permission import canUploadFiles, canShowFiles
-from fileSystem.serializers import fileSerializer, typesSerializer
+from fileSystem.serializers import fileSerializer, typesSerializer, fileSerializerDetail
 from fileSystem.models import file, types
 
 
@@ -36,13 +36,8 @@ def getAllType(request, format=None):
     except types.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    content={}
-    for t in type:
-        content+={
-            'id': t.pk,
-            'name': t.name
-            }
-    return Response(content)
+    serializer =  typesSerializer(type, context={'request': request}, many=True)
+    return Response(serializer.data)
 
 
 #-----------File-----------
@@ -55,7 +50,7 @@ def getFile(request, pk, format=None):
     except file.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  fileSerializer(files, context={'request': request})
+    serializer =  fileSerializerDetail(files, context={'request': request})
     return Response(serializer.data)
 
 
@@ -68,13 +63,9 @@ def getAllFile(request, format=None):
     except file.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    content={}
-    for f in files:
-        content+={
-            'id': f.pk,
-            'name': f.name
-                }
-    return Response(content)
+
+    serializer =  fileSerializer(files, context={'request': request}, many=True)
+    return Response(serializer.data)
 
 
 #------------------------POST-------------------------
@@ -87,7 +78,7 @@ def postFile(request, format=None):
     f = request.FILES['upload']
     request.data['upload']=SaveFile(settings.MEDIA_ROOT+str(request.data['upload']),f)
         
-    serializer = fileSerializer(data=request.data, context={'request': request})
+    serializer = fileSerializerDetail(data=request.data, context={'request': request})
 
     if serializer.is_valid():
         serializer.save()

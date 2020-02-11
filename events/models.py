@@ -7,6 +7,7 @@ class type (models.Model):
 class event (models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    date = models.DateField(blank=True, null=True, default=timezone.now)
-    eventType = models.ForeignKey('type', on_delete=models.CASCADE, default='')
-    group = models.ForeignKey('auth.group', on_delete=models.CASCADE, default='')
+    dateStart = models.DateTimeField(blank=True, null=True, default=timezone.now)
+    dateEnd = models.DateTimeField(blank=True, null=True, default=timezone.now)
+    eventType = models.ForeignKey('type', on_delete=models.CASCADE, default=type.objects.get(id=1))
+    #group = models.ForeignKey('auth.group', on_delete=models.CASCADE, default='')
