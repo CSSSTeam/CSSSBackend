@@ -1,5 +1,5 @@
 from django.urls import include, path
-from events.views import getEvent, postEvent, getType, getAllType, postType, getEventByMonth
+from events.views import getEvent, postEvent, getType, getAllType, postType, getEventByMonth, getEventByDate
 
 urlpatterns = [
     path('event/<int:pk>/', getEvent),
@@ -7,5 +7,6 @@ urlpatterns = [
     path('type/', getAllType),
     path('event/add/', postEvent),
     path('type/add/', postType),
-    path('event/',getEventByMonth)
+    path('event/month/',getEventByMonth),
+    path('event/date/',getEventByDate)
 ]
