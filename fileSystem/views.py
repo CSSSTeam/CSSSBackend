@@ -5,7 +5,7 @@ from rest_framework import status
 
 from django.conf import settings
 
-from fileSystem.permission import canUploadFiles, canShowFiles
+from fileSystem.permission import canCreate, canShow
 from fileSystem.serializers import fileSerializer, typesSerializer, fileSerializerDetail
 from fileSystem.models import file, types
 
@@ -15,7 +15,7 @@ from fileSystem.models import file, types
 
 #-----------Type-----------
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getType(request, pk, format=None):
 
     try:
@@ -28,7 +28,7 @@ def getType(request, pk, format=None):
 
 
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getAllType(request, format=None):
 
     try:
@@ -42,7 +42,7 @@ def getAllType(request, format=None):
 
 #-----------File-----------
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getFile(request, pk, format=None):
 
     try:
@@ -55,7 +55,7 @@ def getFile(request, pk, format=None):
 
 
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getAllFile(request, format=None):
 
     try:
@@ -70,7 +70,7 @@ def getAllFile(request, format=None):
 
 #------------------------POST-------------------------
 @api_view(['POST'])
-@permission_classes([canUploadFiles])
+@permission_classes([canCreate])
 def postFile(request, format=None):
 
     parser_classes = [FileUploadParser]
@@ -96,7 +96,7 @@ def SaveFile(name,f):
         
 
 @api_view(['POST'])
-@permission_classes([canUploadFiles])
+@permission_classes([canCreate])
 def postType(request, format=None):
 
     serializer =  typesSerializer(data=request.data, context={'request': request})
