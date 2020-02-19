@@ -1,20 +1,20 @@
 from rest_framework import serializers
 from fileSystem.models import file, types
 
-class fileSerializerDetail(serializers.HyperlinkedModelSerializer):
+class fileSerializerDetail(serializers.ModelSerializer):
 
     class Meta:
         model = file
         fields = ['pk','name','description','fileType','upload','date']
 
-class fileSerializer(serializers.HyperlinkedModelSerializer):
+class fileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = file
-        fields = ['pk','name']
+        fields = ['pk','name','fileType']
         
 
-class typesSerializer(serializers.HyperlinkedModelSerializer):
+class typesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = types

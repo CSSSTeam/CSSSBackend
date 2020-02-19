@@ -135,7 +135,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/staticfiles/'
-MEDIA_ROOT = './media/uploaded_files/'
+MEDIA_ROOT = '.' + STATIC_URL + 'uploaded_files/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())

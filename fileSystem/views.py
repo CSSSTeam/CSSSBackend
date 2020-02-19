@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 
 from django.conf import settings
+from django.utils.datastructures import MultiValueDictKeyError
 
 from fileSystem.permission import canCreate, canShow
 from fileSystem.serializers import fileSerializer, typesSerializer, fileSerializerDetail
@@ -51,6 +52,23 @@ def getFile(request, pk, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer =  fileSerializerDetail(files, context={'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([canShow])
+def getFileByType(request, format=None):
+
+    try:
+        t=request.GET['type']
+
+        files = file.objects.filter(fileType=t)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer =  fileSerializerDetail(files, context={'request': request}, many=True)
     return Response(serializer.data)
 
 
