@@ -7,6 +7,6 @@ from users.views import detailsUser, logout, AdministrationUser, currentUserAdmi
 urlpatterns = [
     path('details/', detailsUser.as_view()),
     path('logout/', logout.as_view()),
-    path('administration/<int:pk>/', currentUserAdmin.as_view()),
-    path('administration/', AdministrationUser.as_view())
+    path('<int:pk>/', currentUserAdmin.as_view()),
+    path('/', AdministrationUser.as_view())
 ]
