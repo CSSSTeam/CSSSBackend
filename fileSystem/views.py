@@ -7,8 +7,8 @@ from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 
 from fileSystem.permission import canCreate, canShow
-from fileSystem.serializers import fileSerializer, typesSerializer, fileSerializerDetail
-from fileSystem.models import file, types
+from fileSystem.serializers import fileSerializer, typeSerializer, fileSerializerDetail
+from fileSystem.models import file, type
 
 
 #------------------------GET-------------------------
@@ -20,11 +20,11 @@ from fileSystem.models import file, types
 def getType(request, pk, format=None):
 
     try:
-        type = types.objects.get(pk=pk)
-    except types.DoesNotExist:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    serializer =  typesSerializer(type, context={'request': request})
+    serializer =  typeSerializer(types, context={'request': request})
     return Response(serializer.data)
 
 
@@ -33,11 +33,11 @@ def getType(request, pk, format=None):
 def getAllType(request, format=None):
 
     try:
-        type = types.objects.all()
-    except types.DoesNotExist:
+        types = type.objects.all()
+    except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  typesSerializer(type, context={'request': request}, many=True)
+    serializer =  typeSerializer(types, context={'request': request}, many=True)
     return Response(serializer.data)
 
 
@@ -115,10 +115,68 @@ def SaveFile(name,f):
 
 @api_view(['POST'])
 @permission_classes([canCreate])
-def postType(request, format=None):
+def editFile(request, pk, format=None):
 
-    serializer =  typesSerializer(data=request.data, context={'request': request})
+    try:
+        files = file.objects.get(pk=pk)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  fileSerializerDetail(files,data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([canCreate])
+def postType(request, format=None):
+
+    serializer =  typeSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([canCreate])
+def editType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  typesSerializerDetail(types,data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#-----------------------DELETE------------------------
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delFile(request, pk, format=None):
+
+    try:
+        files = file.objects.get(pk=pk)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    files.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    types.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

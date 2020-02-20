@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from fileSystem.models import file, types
+from fileSystem.models import file, type
 
 class fileSerializerDetail(serializers.ModelSerializer):
 
@@ -14,9 +14,9 @@ class fileSerializer(serializers.ModelSerializer):
         fields = ['pk','name','fileType']
         
 
-class typesSerializer(serializers.ModelSerializer):
+class typeSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = types
+        model = type
         fields = ['pk','name']
 

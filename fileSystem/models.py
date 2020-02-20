@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils import timezone
 
-class types (models.Model):
+class type (models.Model):
     name = models.CharField(max_length=50)
 
 def createDefault():
     try:
-        t = types.objects.get(pk=1)
-    except types.DoesNotExist:
-        t = types.objects.create(pk=1,name="None")
+        t = type.objects.get(pk=1)
+    except type.DoesNotExist:
+        t = type.objects.create(pk=1,name="None")
         t.save()
     return t
 
