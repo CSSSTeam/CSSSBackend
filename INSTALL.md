@@ -6,18 +6,16 @@
 
 We **highly recommend** and only officially support the latest patch release of each Python and Django series.
 
-## Activate environment
-Activate a virtual environment.
+## Create and activate environment
+Create and after Activate a virtual environment.
 ```
-env\Scripts\activate
+python3 -m venv venv
+venv\Scripts\activate
 ```
 
 ## Install packets
 ```
-pip install django
-pip install djangorestframework
-pip install mysqlclient
-pip install django-cors-headers
+pip install -r requirements.txt
 ```
 
 
