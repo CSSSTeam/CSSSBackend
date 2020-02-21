@@ -93,13 +93,18 @@ def postFile(request, format=None):
 
     parser_classes = [FileUploadParser]
 
-    f = request.FILES['upload']
-    request.data['upload']=SaveFile(settings.MEDIA_ROOT+str(request.data['upload']),f)
-        
+    try:
+        f = request.FILES['upload']
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    request.data['upload']=settings.MEDIA_ROOT+str(request.data['upload'])
     serializer = fileSerializerDetail(data=request.data, context={'request': request})
 
     if serializer.is_valid():
         serializer.save()
+        SaveFile(request.data['upload'],f)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
