@@ -5,13 +5,13 @@ class eventSerializerDetail(serializers.ModelSerializer):
 
     class Meta:
         model = event
-        fields = ['pk','name','description','eventType','dateStart','dateEnd']
+        fields = ['pk','name','description','eventType','dateStart','dateEnd','group']
         
 class eventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = event
-        fields = ['pk','name','eventType','dateStart','dateEnd']
+        fields = ['pk','name','eventType','dateStart','dateEnd','group']
         
 
 class typeSerializer(serializers.ModelSerializer):

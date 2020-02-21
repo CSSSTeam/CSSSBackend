@@ -5,7 +5,7 @@ class fileSerializerDetail(serializers.ModelSerializer):
 
     class Meta:
         model = file
-        fields = ['pk','name','description','fileType','upload','date']
+        fields = ['pk','name','description','fileType','upload','date','author']
 
 class fileSerializer(serializers.ModelSerializer):
 
