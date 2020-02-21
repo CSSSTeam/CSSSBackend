@@ -1,6 +1,8 @@
 /venv/
 /fileSystem/migrations/
 /users/migrations/
+/events/migrations/
+/timetable/migrations/
 /mysite/key.txt
 .idea/
 =======

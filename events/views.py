@@ -100,6 +100,23 @@ def postEvent(request, format=None):
 
 @api_view(['POST'])
 @permission_classes([canCreate])
+def editEvent(request, pk, format=None):
+
+    try:
+        events = event.objects.get(pk=pk)
+    except event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  eventSerializerDetail(events,data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([canCreate])
 def postType(request, format=None):
 
     serializer = typeSerializer(data=request.data, context={'request': request})
@@ -107,3 +124,44 @@ def postType(request, format=None):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([canCreate])
+def editType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  typeSerializer(types,data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#-----------------------DELETE------------------------
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delEvent(request, pk, format=None):
+
+    try:
+        events = event.objects.get(pk=pk)
+    except event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    events.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    types.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

@@ -149,7 +149,7 @@ def editType(request, pk, format=None):
     except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  typesSerializerDetail(types,data=request.data, context={'request': request})
+    serializer =  typeSerializer(types,data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
