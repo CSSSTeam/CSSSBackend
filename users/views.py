@@ -31,7 +31,7 @@ class detailsUser(APIView):
     def get(self, request):
         user = getUser(request)
         content = UserDisplaySerializer(user)
-        return Response(content)
+        return Response(content.data)
 
 
 class AdministrationUser(APIView):

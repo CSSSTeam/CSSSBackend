@@ -8,6 +8,7 @@ from datetime import timedelta
 import json
 from timetable.models import dayOfWeek
 from timetable.permission import canGetTimetable, canSetTimetable, canSetHourLesson
+from users.utility import getUser
 
 
 @api_view(['GET'])
@@ -31,6 +32,32 @@ def getTimetable(request):
     return Response(response)
 
 
+@api_view(['GET'])
+@permission_classes([canGetTimetable])
+def getMyTimetable(request):
+    user = getUser(request)
+    response = {"period": []}
+    hourLessons = HourLesson.objects.all().order_by("number")
+    for period in hourLessons:
+        response["period"].append({'num': period.number, 'start': period.start, 'end': period.end})
+
+    for day in dayOfWeek.choices():
+        dayLessons = []
+        lessonsData = Lesson.objects.filter(day=day[0])
+        for hour in hourLessons:
+            lesson = []
+
+            lessonData = lessonsData.filter(hour=hour)
+            for l in lessonData:
+                if l.group == -1 or user.groups.filter(id=l.group).exists():
+                    lesson.append(
+                        {"subject": l.subject, "classroom": l.classroom, "teacher": l.teacher, "group": l.group})
+                    break
+            dayLessons.append(lesson)
+        response[day[1].lower()] = dayLessons
+    return Response(response)
+
+
 @api_view(['POST'])
 @permission_classes([canSetTimetable])
 def setTimetable(request):
@@ -49,7 +76,7 @@ def setTimetable4day(lessonsOfDay, day):
     num_lesson = 0
     for lessonsData in lessonsOfDay:
         print(HourLesson.objects.all())
-        hour = HourLesson.objects.get(number=num_lesson+1)
+        hour = HourLesson.objects.get(number=num_lesson + 1)
         num_lesson = num_lesson + 1
         if lessonsData is None:
             continue
@@ -69,19 +96,20 @@ def setTimetable4day(lessonsOfDay, day):
             lesson.save()
 
 
-def setTimetable4dayfromAPI(lessonsOfDay, day,codeGroups):
+def setTimetable4dayfromAPI(lessonsOfDay, day, codeGroups):
     num_lesson = 0
     for lessonsData in lessonsOfDay:
-        hour = HourLesson.objects.get(number=num_lesson+1)
+        hour = HourLesson.objects.get(number=num_lesson + 1)
         num_lesson = num_lesson + 1
         if lessonsData is None:
             continue
         for lessonData in lessonsData:
-            group =codeGroups[lessonData['groupNum']]
+            group = codeGroups(lessonData)['group']
             lesson = Lesson(subject=lessonData["subject"], day=day[0], hour=hour, teacher=lessonData["teacher"],
                             classroom=lessonData["classroom"],
                             group=group)
             lesson.save()
+
 
 @api_view(['POST'])
 @permission_classes([canSetHourLesson])
