@@ -8,7 +8,7 @@ from users import urlsUser as usersUrls
 from users import urlsGroup as groupsUrls
 from fileSystem import urls as fileUrls
 from timetable import urls as timetableURLs
-
+import mysite.subsystems
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [

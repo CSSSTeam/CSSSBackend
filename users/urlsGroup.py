@@ -6,5 +6,5 @@ from users.views import detailsUser, logout, currentGroupAdmin,AdministrationGro
 
 urlpatterns = [
     path('<int:pk>/', currentGroupAdmin.as_view()),
-    path('/', AdministrationGroup.as_view())
+    path('', AdministrationGroup.as_view())
 ]

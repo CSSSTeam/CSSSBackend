@@ -16,16 +16,16 @@ def getTimetable(request):
     response = {"period": []}
     hourLessons = HourLesson.objects.all().order_by("number")
     for period in hourLessons:
-        response["period"].append({'start': period.start, 'end': period.end})
+        response["period"].append({'num': period.number, 'start': period.start, 'end': period.end})
 
-    for day in dayOfWeek.choises():
+    for day in dayOfWeek.choices():
         dayLessons = []
         lessonsData = Lesson.objects.filter(day=day[0])
         for hour in hourLessons:
             lesson = []
             lessonData = lessonsData.filter(hour=hour)
             for l in lessonData:
-                lesson.append({"name": l.name, "classroom": l.classroom, "teacher": l.teacher, "group": l.group})
+                lesson.append({"subject": l.subject, "classroom": l.classroom, "teacher": l.teacher, "group": l.group})
             dayLessons.append(lesson)
         response[day[1].lower()] = dayLessons
     return Response(response)
@@ -48,25 +48,40 @@ def setTimetable(request):
 def setTimetable4day(lessonsOfDay, day):
     num_lesson = 0
     for lessonsData in lessonsOfDay:
-        hour = HourLesson.objects.get(number=num_lesson)
+        print(HourLesson.objects.all())
+        hour = HourLesson.objects.get(number=num_lesson+1)
         num_lesson = num_lesson + 1
         if lessonsData is None:
             continue
         for lessonData in lessonsData:
-            if (not "name" in lessonData) or lessonData['name'] == "":
-                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not name")
+            if (not "subject" in lessonData) or lessonData['subject'] == "":
+                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not subject")
             if (not "teacher" in lessonData) or lessonData['teacher'] == "":
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not teacher")
             if (not "classroom" in lessonData) or lessonData['classroom'] == "":
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not classroom")
             if (not "group" in lessonData) or (
-                    (str(lessonData['group']) == "-1") and Group.objects.filter(id=lessonData['group']) is None):
+                    (not str(lessonData['group']) == "-1") and Group.objects.filter(id=lessonData['group']) is None):
                 raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has group that does not exist")
-            lesson = Lesson(name=lessonData["name"], day=day[0], hour=hour, teacher=lessonData["teacher"],
+            lesson = Lesson(subject=lessonData["subject"], day=day[0], hour=hour, teacher=lessonData["teacher"],
                             classroom=lessonData["classroom"],
                             group=lessonData["group"])
             lesson.save()
 
+
+def setTimetable4dayfromAPI(lessonsOfDay, day,codeGroups):
+    num_lesson = 0
+    for lessonsData in lessonsOfDay:
+        hour = HourLesson.objects.get(number=num_lesson+1)
+        num_lesson = num_lesson + 1
+        if lessonsData is None:
+            continue
+        for lessonData in lessonsData:
+            group =codeGroups[lessonData['groupNum']]
+            lesson = Lesson(subject=lessonData["subject"], day=day[0], hour=hour, teacher=lessonData["teacher"],
+                            classroom=lessonData["classroom"],
+                            group=group)
+            lesson.save()
 
 @api_view(['POST'])
 @permission_classes([canSetHourLesson])
