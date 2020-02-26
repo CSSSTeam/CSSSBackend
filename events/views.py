@@ -55,14 +55,22 @@ def getEvent(request, pk, format=None):
 @permission_classes([canShow])
 def getEventByMonth(request, format=None):
 
+    g = request.GET.get('group')
+    print(g)
     try:
+       
         m = request.GET['m']
         y = request.GET['y']
 
-        events = event.objects.filter(Q(dateStart__year=int(y),dateStart__month=int(m)) | Q(dateStart__year=int(y),dateStart__month=int(m)))
+        query = Q(dateStart__year=int(y),dateStart__month=int(m)) | Q(dateStart__year=int(y),dateStart__month=int(m))
+
+        if(g is None):
+            events = event.objects.filter(query)
+        else:
+            events = event.objects.filter(query,group=g)
     except event.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    except MultiValueDictKeyError:
+    except (ValueError, MultiValueDictKeyError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     serializer = eventSerializer(events, context={'request': request}, many=True)
@@ -72,17 +80,24 @@ def getEventByMonth(request, format=None):
 @permission_classes([canShow])
 def getEventByDate(request, format=None):
 
+    g = request.GET.get('group')
+
     try:
 
         s = datetime.strptime(request.GET['start'], '%Y-%m-%d')
         e = datetime.strptime(request.GET['end'], '%Y-%m-%d')
 
-        events = event.objects.filter( Q(dateEnd__gte=s,dateStart__lte=s) | Q(dateEnd__gte=e,dateStart__lte=e))
+        query = Q(dateEnd__gte=s,dateStart__lte=s) | Q(dateEnd__gte=e,dateStart__lte=e)
+
+        if(g is None):
+            events = event.objects.filter(query)
+        else:
+            events = event.objects.filter(query,group=g)
     except event.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     except (ValueError, MultiValueDictKeyError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
- 
+    
 
     serializer = eventSerializer(events, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -107,7 +122,7 @@ def editEvent(request, pk, format=None):
     except event.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  eventSerializerDetail(events,data=request.data, context={'request': request})
+    serializer = eventSerializerDetail(events,data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -134,7 +149,7 @@ def editType(request, pk, format=None):
     except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  typeSerializer(types,data=request.data, context={'request': request})
+    serializer = typeSerializer(types,data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
