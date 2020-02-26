@@ -8,9 +8,9 @@ jobs:
     docker:
      - image: circleci/python:latest
      - image: circleci/mysql:8.0.4
-        environment:
-          MYSQL_ROOT_PASSWORD: 
-          MYSQL_DATABASE: CSSS
+       environment:
+         MYSQL_ROOT_PASSWORD: 
+         MYSQL_DATABASE: CSSS
     working_directory: ~/repo
     steps:
       - checkout
