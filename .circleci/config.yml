@@ -11,6 +11,7 @@ jobs:
        environment:
          MYSQL_ROOT_PASSWORD: 
          MYSQL_DATABASE: CSSS
+         MYSQL_ROOT_HOST: "%"
     working_directory: ~/repo
     steps:
       - checkout
