@@ -11,7 +11,6 @@ jobs:
        command: [--default-authentication-plugin=mysql_native_password]
        environment:
          MYSQL_ALLOW_EMPTY_PASSWORD: true
-         MYSQL_ROOT_PASSWORD: 
          MYSQL_DATABASE: CSSS
     working_directory: ~/repo
     steps:
