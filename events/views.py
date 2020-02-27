@@ -1,6 +1,7 @@
 from django.db.models import Q
 from datetime import datetime
 from django.utils.datastructures import MultiValueDictKeyError
+import calendar
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -59,10 +60,15 @@ def getEventByMonth(request, format=None):
     print(g)
     try:
        
-        m = request.GET['m']
-        y = request.GET['y']
+        m = int(request.GET['m'])
+        y = int(request.GET['y'])
 
-        query = Q(dateStart__year=int(y),dateStart__month=int(m)) | Q(dateStart__year=int(y),dateStart__month=int(m))
+        EndDay = calendar.monthrange(y,m)[1]
+
+        s = datetime(year=y,month=m,day=1)
+        e = datetime(year=y,month=m,day=EndDay)
+
+        query = Q(dateEnd__gte=s,dateStart__lte=s) or Q(dateEnd__gte=e,dateStart__lte=e) or Q(dateEnd__lte=e,dateStart__gte=s)
 
         if(g is None):
             events = event.objects.filter(query)
@@ -87,7 +93,7 @@ def getEventByDate(request, format=None):
         s = datetime.strptime(request.GET['start'], '%Y-%m-%d')
         e = datetime.strptime(request.GET['end'], '%Y-%m-%d')
 
-        query = Q(dateEnd__gte=s,dateStart__lte=s) | Q(dateEnd__gte=e,dateStart__lte=e)
+        query = Q(dateEnd__gte=s,dateStart__lte=s) or Q(dateEnd__gte=e,dateStart__lte=e) or Q(dateEnd__lte=e,dateStart__gte=s)
 
         if(g is None):
             events = event.objects.filter(query)
@@ -100,6 +106,36 @@ def getEventByDate(request, format=None):
     
 
     serializer = eventSerializer(events, context={'request': request}, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([canShow])
+def searchEvent(request):
+    try:
+        s = request.GET['phrase']
+
+        events = event.objects.filter(Q(name__contains=s) or Q(description__contains=s))
+    except event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = eventSerializer(events, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([canShow])
+def getEventByType(request):
+    try:
+        t = request.GET['type']
+
+        events = event.objects.filter(eventType=t)
+    except event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except (ValueError, MultiValueDictKeyError):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = eventSerializer(events, many=True)
     return Response(serializer.data)
 
 #------------------------POST-------------------------

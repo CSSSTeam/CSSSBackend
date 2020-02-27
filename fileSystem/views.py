@@ -71,6 +71,20 @@ def getFileByType(request, format=None):
     serializer =  fileSerializerDetail(files, context={'request': request}, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([canShow])
+def searchFile(request):
+    try:
+        s = request.GET['phrase']
+
+        files = file.objects.filter(Q(name__contains=s) or Q(description__contains=s))
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = fileSerializer(files, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([canShow])
