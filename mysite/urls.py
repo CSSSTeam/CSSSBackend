@@ -7,6 +7,7 @@ from users import views as viewsUsers
 from users import urls as usersUrls
 from fileSystem import urls as fileSystemUrls
 from events import urls as eventsUrls
+from users import urlsGroup as groupsUrls
 from timetable import urls as timetableURLs
 
 # Wire up our API using automatic URL routing.
@@ -16,6 +17,7 @@ urlpatterns = [
     path('user/', include(usersUrls)),
     path('fileSystem/', include(fileSystemUrls)),
     path('events/', include(eventsUrls)),
+    path('group/', include(groupsUrls)),
     path('timetable/', include(timetableURLs)),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]

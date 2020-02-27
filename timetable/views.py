@@ -38,20 +38,33 @@ def setTimetable(request):
     for day in dayOfWeek.choises():
         if not timetable[day[1].lower()] is None:
             Lesson.objects.filter(day=day[0]).delete()
-            setTimetable4day(timetable[day[1].lower()], day)
-    return Response("OK")
+            try:
+                setTimetable4day(timetable[day[1].lower()], day)
+            except Exception as exeption:
+                return Response({"error": str(exeption)}, status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_201_CREATED)
 
 
 def setTimetable4day(lessonsOfDay, day):
     num_lesson = 0
-    for lessonData in lessonsOfDay:
+    for lessonsData in lessonsOfDay:
         hour = HourLesson.objects.get(number=num_lesson)
         num_lesson = num_lesson + 1
-        if lessonData is None:
+        if lessonsData is None:
             continue
-        for l in lessonData:
-            lesson = Lesson(name=l["name"], day=day[0], hour=hour, teacher=l["teacher"], classroom=l["classroom"],
-                            group=l["group"])
+        for lessonData in lessonsData:
+            if (not "name" in lessonData) or lessonData['name'] == "":
+                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not name")
+            if (not "teacher" in lessonData) or lessonData['teacher'] == "":
+                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not teacher")
+            if (not "classroom" in lessonData) or lessonData['classroom'] == "":
+                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has not classroom")
+            if (not "group" in lessonData) or (
+                    (str(lessonData['group']) == "-1") and Group.objects.filter(id=lessonData['group']) is None):
+                raise Exception(f"lesson in {day[0]} time {num_lesson + 1} has group that does not exist")
+            lesson = Lesson(name=lessonData["name"], day=day[0], hour=hour, teacher=lessonData["teacher"],
+                            classroom=lessonData["classroom"],
+                            group=lessonData["group"])
             lesson.save()
 
 
@@ -62,12 +75,20 @@ def setHourLessons(request):
     HourLesson.objects.all().delete()
     num_lesson = 0
     for obj in body:
-        createHourLessons(obj, num_lesson)
+        try:
+            createHourLessons(obj, num_lesson)
+        except Exception as exeption:
+            return Response({"error": str(exeption)}, status=status.HTTP_400_BAD_REQUEST)
         num_lesson = num_lesson + 1
-    return Response("OK")
+    return Response(status=status.HTTP_201_CREATED)
 
 
 def createHourLessons(lessonObject, num_lesson):
+    if (not "start" in lessonObject) or lessonObject['start'] == "":
+        raise Exception(f"Hour {num_lesson + 1} has not start")
+    if (not "end" in lessonObject) or lessonObject['end'] == "":
+        raise Exception(f"Hour {num_lesson + 1} has not end")
+
     lesson = HourLesson(number=num_lesson, start=lessonObject['start'], end=lessonObject['end'])
     lesson.save()
     return lesson

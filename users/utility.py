@@ -5,7 +5,20 @@ def getUser(request):
     tok = request.headers.get('Authorization')
     if tok is None:
         return None
-    return Token.objects.get(key=tok[6:len(tok)]).user
+    user_object = Token.objects.get(key=tok[6:len(tok)])
+    if user_object is None:
+        return None
+    return user_object.user
+
+
+def deleteToken(request):
+    tok = request.headers.get('Authorization')
+    if tok is None:
+        return
+    user_object = Token.objects.get(key=tok[6:len(tok)])
+    if user_object is None:
+        return
+    user_object.delete()
 
 
 def userHasPerm(request, permission):
