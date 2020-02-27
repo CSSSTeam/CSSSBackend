@@ -30,9 +30,11 @@ jobs:
             done
             echo Failed waiting for MySQL && exit 1
       
-    database:
-      override:
-        - mysql -u ubuntu -e "create database test_CSSS"
+      - run:
+          name: Install MySQL CLI; Create db
+          command: |
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -u csssUser -1234 test_CSSS
       
       # Download and cache dependencies
       - restore_cache:
