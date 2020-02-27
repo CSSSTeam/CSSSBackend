@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group, Permission
-from fileSystem.models import file, types
+from fileSystem.models import file, type
 from django.utils import timezone
 
 
@@ -34,7 +34,7 @@ def createFile(name="", description="", fileType="", upload="", author=""):
 
 
 def createType(name=""):
-    type = types.objects.get_or_create(name=name)[0]
+    type = type.objects.get_or_create(name=name)[0]
     type.save()
     return type
 
@@ -69,5 +69,7 @@ createUser(username="user3", password="admin", first_name="Steve", last_name="Jo
 createUser(username="user4", password="admin", first_name="Steve", last_name="Jobs",
            email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
 
-type = createType("ak")
-createFile("bfc", "bc", type, "dx")
+
+types = createType("ak")
+createFile("bfc", "bc", types, "dx")
+
