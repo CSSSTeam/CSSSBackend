@@ -93,8 +93,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CSSS',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'csssUser',
+        'PASSWORD': '1234',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
