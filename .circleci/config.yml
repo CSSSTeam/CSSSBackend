@@ -53,7 +53,9 @@ jobs:
           name: Migrate database
           command: |
             . venv/bin/activate
-            python manage.py makemigrations api_server
+            python manage.py makemigrations fileSystem
+            python manage.py makemigrations users
+            python manage.py makemigrations timetable
             python manage.py migrate
       
       - run:
