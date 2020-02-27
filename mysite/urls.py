@@ -9,7 +9,7 @@ from fileSystem import urls as fileSystemUrls
 from events import urls as eventsUrls
 from users import urlsGroup as groupsUrls
 from timetable import urls as timetableURLs
-
+import mysite.subsystems
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
