@@ -10,7 +10,7 @@ jobs:
      - image: circleci/mysql:latest
        command: [--default-authentication-plugin=mysql_native_password]
        environment:
-         MYSQL_DATABASE: CSSS
+         MYSQL_DATABASE: CSSS test_CSSS
          MYSQL_USER: csssUser
          MYSQL_PASSWORD: 1234
          MYSQL_HOST: 127.0.0.1
