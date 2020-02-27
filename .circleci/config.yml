@@ -8,10 +8,11 @@ jobs:
     docker:
      - image: circleci/python:latest
      - image: circleci/mysql:latest
-       command: [--default-authentication-plugin=mysql_native_password]
        environment:
-         MYSQL_ALLOW_EMPTY_PASSWORD: true
          MYSQL_DATABASE: CSSS
+         MYSQL_USER: csssUser
+         MYSQL_PASSWORD: 1234
+         MYSQL_HOST: 127.0.0.1
     working_directory: ~/repo
     steps:
       - checkout
