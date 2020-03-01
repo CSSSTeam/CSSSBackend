@@ -3,12 +3,12 @@ from rest_framework import permissions
 from users.utility import getUser, userHasPerm
 
 
-class canShowFiles(permissions.BasePermission):
+class canShow(permissions.BasePermission):
 
-   def has_permission(self, request, view):
-        return userHasPerm(request, "filesystem.show_file")
+    def has_permission(self, request, view):
+        return userHasPerm(request, "filesystem.show")
 
-class canUploadFiles(permissions.BasePermission):
+class canCreate(permissions.BasePermission):
 
-   def has_permission(self, request, view):
-        return userHasPerm(request, "filesystem.uplaod_file")
+    def has_permission(self, request, view):
+        return userHasPerm(request, "filesystem.create")

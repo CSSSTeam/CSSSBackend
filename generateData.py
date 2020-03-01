@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from treasurer.models import TreasurerList
-from fileSystem.models import file, types
+from fileSystem.models import file, type
 from django.utils import timezone
 
 
@@ -55,7 +55,7 @@ def createFile(name="", description="", fileType="", upload="", author=""):
 
 
 def createType(name=""):
-    type = types.objects.get_or_create(name=name)[0]
+    type = type.objects.get_or_create(name=name)[0]
     type.save()
     return type
 
@@ -69,15 +69,28 @@ president = createGroup(name="President")
 vicePresident = createGroup(name="Vice President")
 moderator = createGroup(name="Moderator", permissions=moderatorPermissions)
 admin = createGroup(name="Admin")
+
 englishGr1 = createGroup(name="English Group 1")
 englishGr2 = createGroup(name="English Group 2")
 germanyGr1 = createGroup(name="Germany Group 1")
 germanyGr2 = createGroup(name="Germany Group 2")
+utk1 = createGroup(name="utk1")
+utk2 = createGroup(name="utk2")
+utk3 = createGroup(name="utk3")
+wf1 = createGroup(name="wf1")
+wf2 = createGroup(name="wf2")
+wfGirls = createGroup(name="wfGirls")
 
-user = createUser(username="admin", password="admin", first_name="admin", last_name="toor",
-                  email="admin@admin.com", groups=[admin, englishGr1, germanyGr2])
-createUser(username="moderator", password="moderator", first_name="Steve", last_name="Jobs",
-           email="stevejobs@apple.com", groups=[moderator, englishGr1, germanyGr1])
+createUser(username="user1", password="admin", first_name="admin", last_name="toor",
+           email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
+createUser(username="user2", password="admin", first_name="Steve", last_name="Jobs",
+           email="stevejobs@apple.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
+createUser(username="user3", password="admin", first_name="Steve", last_name="Jobs",
+           email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
+createUser(username="user4", password="admin", first_name="Steve", last_name="Jobs",
+           email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
 
-type = createType("ak")
-createFile("bfc", "bc", type, "dx")
+
+types = createType("ak")
+createFile("bfc", "bc", types, "dx")
+

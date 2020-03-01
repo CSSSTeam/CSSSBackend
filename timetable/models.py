@@ -11,21 +11,21 @@ class dayOfWeek(IntEnum):
     FRIDAY = 5
 
     @classmethod
-    def choises(cls):
+    def choices(cls):
         return [(key.value, key.name) for key in cls]
 
 
 # Create your models here.
 class HourLesson(models.Model):
     number = models.IntegerField(default=1)
-    start = models.TextField()
-    end = models.TextField()
+    start = models.TimeField()
+    end = models.TimeField()
 
 
 class Lesson(models.Model):
-    name = models.TextField()
+    subject = models.TextField()
     classroom = models.TextField(default="")
     teacher = models.TextField(default="")
-    day = models.IntegerField(choices=dayOfWeek.choises(), default=dayOfWeek.MONDAY)
+    day = models.IntegerField(choices=dayOfWeek.choices(), default=dayOfWeek.MONDAY)
     hour = models.ForeignKey(HourLesson, on_delete=models.CASCADE, default=None)
     group = models.IntegerField(default=-1)

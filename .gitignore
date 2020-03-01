@@ -1,7 +1,10 @@
 /venv/
 /fileSystem/migrations/
 /users/migrations/
+/events/migrations/
+/timetable/migrations/
 /mysite/key.txt
+/staticfiles/uploaded_files/*
 .idea/
 =======
 

@@ -4,10 +4,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 
 from django.conf import settings
+from django.utils.datastructures import MultiValueDictKeyError
 
-from fileSystem.permission import canUploadFiles, canShowFiles
-from fileSystem.serializers import fileSerializer, typesSerializer
-from fileSystem.models import file, types
+from fileSystem.permission import canCreate, canShow
+from fileSystem.serializers import fileSerializer, typeSerializer, fileSerializerDetail
+from fileSystem.models import file, type
 
 
 #------------------------GET-------------------------
@@ -15,39 +16,34 @@ from fileSystem.models import file, types
 
 #-----------Type-----------
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getType(request, pk, format=None):
 
     try:
-        type = types.objects.get(pk=pk)
-    except types.DoesNotExist:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    serializer =  typesSerializer(type, context={'request': request})
+    serializer =  typeSerializer(types, context={'request': request})
     return Response(serializer.data)
 
 
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getAllType(request, format=None):
 
     try:
-        type = types.objects.all()
-    except types.DoesNotExist:
+        types = type.objects.all()
+    except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    content={}
-    for t in type:
-        content+={
-            'id': t.pk,
-            'name': t.name
-            }
-    return Response(content)
+    serializer =  typeSerializer(types, context={'request': request}, many=True)
+    return Response(serializer.data)
 
 
 #-----------File-----------
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
 def getFile(request, pk, format=None):
 
     try:
@@ -55,12 +51,43 @@ def getFile(request, pk, format=None):
     except file.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer =  fileSerializer(files, context={'request': request})
+    serializer =  fileSerializerDetail(files, context={'request': request})
     return Response(serializer.data)
 
 
 @api_view(['GET'])
-@permission_classes([canShowFiles])
+@permission_classes([canShow])
+def getFileByType(request, format=None):
+
+    try:
+        t=request.GET['type']
+
+        files = file.objects.filter(fileType=t)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer =  fileSerializerDetail(files, context={'request': request}, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([canShow])
+def searchFile(request):
+    try:
+        s = request.GET['phrase']
+
+        files = file.objects.filter(Q(name__contains=s) or Q(description__contains=s))
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = fileSerializer(files, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([canShow])
 def getAllFile(request, format=None):
 
     try:
@@ -68,29 +95,30 @@ def getAllFile(request, format=None):
     except file.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    content={}
-    for f in files:
-        content+={
-            'id': f.pk,
-            'name': f.name
-                }
-    return Response(content)
+
+    serializer =  fileSerializer(files, context={'request': request}, many=True)
+    return Response(serializer.data)
 
 
 #------------------------POST-------------------------
 @api_view(['POST'])
-@permission_classes([canUploadFiles])
+@permission_classes([canCreate])
 def postFile(request, format=None):
 
     parser_classes = [FileUploadParser]
 
-    f = request.FILES['upload']
-    request.data['upload']=SaveFile(settings.MEDIA_ROOT+str(request.data['upload']),f)
-        
-    serializer = fileSerializer(data=request.data, context={'request': request})
+    try:
+        f = request.FILES['upload']
+    except MultiValueDictKeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    request.data['upload']=settings.MEDIA_ROOT+str(request.data['upload'])
+    serializer = fileSerializerDetail(data=request.data, context={'request': request})
 
     if serializer.is_valid():
         serializer.save()
+        SaveFile(request.data['upload'],f)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,11 +133,69 @@ def SaveFile(name,f):
         
 
 @api_view(['POST'])
-@permission_classes([canUploadFiles])
-def postType(request, format=None):
+@permission_classes([canCreate])
+def editFile(request, pk, format=None):
 
-    serializer =  typesSerializer(data=request.data, context={'request': request})
+    try:
+        files = file.objects.get(pk=pk)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  fileSerializerDetail(files,data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([canCreate])
+def postType(request, format=None):
+
+    serializer =  typeSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([canCreate])
+def editType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer =  typeSerializer(types,data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#-----------------------DELETE------------------------
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delFile(request, pk, format=None):
+
+    try:
+        files = file.objects.get(pk=pk)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    files.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+@permission_classes([canCreate])
+def delType(request, pk, format=None):
+
+    try:
+        types = type.objects.get(pk=pk)
+    except type.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    types.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
