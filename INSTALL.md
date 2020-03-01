@@ -20,15 +20,6 @@ pip install mysqlclient
 pip install django-cors-headers
 ```
 
-## Generate key
-Generate a new private key, and put it in ./server/mysite/key.txt
-```
-django-admin shell
->>> from django.core.management.utils import get_random_secret_key
->>> get_random_secret_key()
-'[GENERATED KEY]'
->>>
-```
 
 ## Set up database
 Set up data to contect to the database (We will use mysql database.) in ./server/mysite/settings.py
@@ -48,7 +39,7 @@ DATABASES = {
 ## Migration and sync the database
 Create an initial migration for models, and sync the database for the first time.
 ```
-python manage.py makemigrations mysite
+python manage.py makemigrations
 python manage.py migrate
 ```
 ## Entering Group and User data
