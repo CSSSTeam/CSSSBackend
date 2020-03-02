@@ -3,11 +3,10 @@ from django.urls import include, path
 from django.views.generic.base import TemplateView
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
-from users import views as viewsUsers
-from users import urls as usersUrls
+from users import urlsUser as usersUrls
+from users import urlsGroup as groupsUrls
 from fileSystem import urls as fileSystemUrls
 from events import urls as eventsUrls
-from users import urlsGroup as groupsUrls
 from timetable import urls as timetableURLs
 import mysite.subsystems
 # Wire up our API using automatic URL routing.

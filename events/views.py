@@ -1,7 +1,9 @@
-from django.db.models import Q
-from datetime import datetime
-from django.utils.datastructures import MultiValueDictKeyError
 import calendar
+from datetime import datetime
+
+from django.db.models import Q
+from django.utils.datastructures import MultiValueDictKeyError
+from django.utils import timezone
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -12,6 +14,10 @@ from events.serializers import eventSerializer, typeSerializer, eventSerializerD
 from events.models import event, type
 
 #------------------------GET-------------------------
+
+@api_view(['GET'])
+def now(request):
+    return Response(timezone.now)
 
 #-----------Type-----------
 @api_view(['GET'])
