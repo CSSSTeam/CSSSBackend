@@ -1,15 +1,17 @@
 from django.conf.urls import url
 from django.urls import include, path
 from django.views.generic.base import TemplateView
-from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
-from users import views as viewsUsers
-from users import urls as usersUrls
-from fileSystem import urls as fileSystemUrls
+
 from events import urls as eventsUrls
-from users import urlsGroup as groupsUrls
+from fileSystem import urls as fileSystemUrls
 from timetable import urls as timetableURLs
-import mysite.subsystems
+from users import urlsGroup as groupsUrls
+from users import urlsUser as usersUrls
+
+from mysite.subsystems import startTreading
+
+startTreading()
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [

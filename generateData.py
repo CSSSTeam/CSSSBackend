@@ -41,7 +41,7 @@ def createType(name=""):
 
 studentPermissions = ["change_user", "view_lesson"]
 treasurerPermissions = studentPermissions
-moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson"]
+moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
 student = createGroup(name="Student", permissions=studentPermissions)
 treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
 president = createGroup(name="President")
@@ -68,8 +68,3 @@ createUser(username="user3", password="admin", first_name="Steve", last_name="Jo
            email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
 createUser(username="user4", password="admin", first_name="Steve", last_name="Jobs",
            email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
-
-
-types = createType("ak")
-createFile("bfc", "bc", types, "dx")
-

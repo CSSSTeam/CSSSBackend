@@ -64,6 +64,6 @@ def treadFunction():
         schedule.run_pending()
         time.sleep(10)
 
-
-thread = threading.Thread(target=treadFunction)
-thread.start()
+def startTreading():
+    thread = threading.Thread(target=treadFunction)
+    thread.start()

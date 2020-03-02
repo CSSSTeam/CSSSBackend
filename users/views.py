@@ -60,12 +60,18 @@ class currentGroupAdmin(APIView):
     permission_classes = [canAdministionOnCurrent]
 
     def get(self, request, pk):
-        group = Group.objects.get(id=pk)
-        group_serialized = UserDisplaySerializer(group)
+        try:
+            group = Group.objects.get(id=pk)
+        except Exception as e:
+            print(str(e))
+        group_serialized = GroupDisplaySerializer(group)
         return Response(group_serialized.data)
 
     def delete(self, request, pk):
-        Group.objects.get(id=pk).delete()
+        try:
+            Group.objects.get(id=pk).delete()
+        except Exception as e:
+            print(str(e))
         return Response(status=status.HTTP_200_OK)
 
 
