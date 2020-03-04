@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from users.utility import getUser, userHasPerm
+from users.utility import userHasPerm
 
 
 class canShow(permissions.BasePermission):

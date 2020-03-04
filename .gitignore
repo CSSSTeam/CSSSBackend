@@ -7,6 +7,11 @@
 /mysite/key.txt
 /staticfiles/uploaded_files/*
 .idea/
+
+/staticfiles/staticfiles.json
+/staticfiles/rest_framework
+/staticfiles/admin
+
 =======
 
 ## Ignore Visual Studio temporary files, build results, and
