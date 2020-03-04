@@ -3,6 +3,7 @@
 /users/migrations/
 /events/migrations/
 /timetable/migrations/
+/treasurer/migrations/
 /mysite/key.txt
 /staticfiles/uploaded_files/*
 .idea/
