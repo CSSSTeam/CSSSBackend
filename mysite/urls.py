@@ -8,7 +8,7 @@ from users import urlsGroup as groupsUrls
 from fileSystem import urls as fileSystemUrls
 from events import urls as eventsUrls
 from timetable import urls as timetableURLs
-import mysite.subsystems
+import mysite.subsystems as threadSystem
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
@@ -20,3 +20,5 @@ urlpatterns = [
     path('timetable/', include(timetableURLs)),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
+
+threadSystem.startTreading()
