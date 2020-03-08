@@ -6,10 +6,10 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 
-from fileSystem.permission import canCreate, canShow
+from events.permission import canCreate, canShow
 from events.serializers import eventSerializer, typeSerializer, eventSerializerDetail
 from events.models import event, type
 

@@ -44,7 +44,6 @@ def updatingTimetable():
     conn.request("GET", "/api/timetable/9/get/1i2")
     res = conn.getresponse()
     data = json.loads(res.read())
-    # print(data)
     HourLesson.objects.all().delete()
     print(data)
 
