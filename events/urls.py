@@ -11,8 +11,9 @@ urlpatterns = [
     path('type/', getAllType),
 
     path('event/add/', postEvent),
-    path('event/edit/<int:pk>/', editEvent),
     path('type/add/', postType),
+
+    path('event/edit/<int:pk>/', editEvent),
     path('type/edit/<int:pk>/', editType),
 
     path('event/del/<int:pk>/', delEvent),

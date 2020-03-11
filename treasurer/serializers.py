@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from treasurer.models import TreasurerList, Member
+from treasurer.models import List, Member
 
-class treasurerListSerializer(serializers.ModelSerializer):
+class listSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = TreasurerList
+        model = List
         fields = ['pk','name','cost']
         
 class memberSerializer(serializers.ModelSerializer):

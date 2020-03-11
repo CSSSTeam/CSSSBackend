@@ -10,8 +10,9 @@ urlpatterns = [
     path('type/', getAllType),
 
     path('file/add/', postFile),
-    path('file/edit/<int:pk>/', editFile),
     path('type/add/', postType),
+
+    path('file/edit/<int:pk>/', editFile),
     path('type/edit/<int:pk>/', editType),
     
     path('file/del/<int:pk>/', delFile),

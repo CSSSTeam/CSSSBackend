@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class TreasurerList(models.Model):
+class List(models.Model):
     name = models.TextField(default="")
     cost = models.IntegerField(default=0)
 

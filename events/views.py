@@ -14,7 +14,6 @@ from events.serializers import eventSerializer, typeSerializer, eventSerializerD
 from events.models import event, type
 
 #------------------------GET-------------------------
-
 @api_view(['GET'])
 def now(request):
     response = {"date": timezone.now()}
@@ -23,7 +22,7 @@ def now(request):
 #-----------Type-----------
 @api_view(['GET'])
 @permission_classes([canShow])
-def getType(request, pk, format=None):
+def getType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)
@@ -35,7 +34,7 @@ def getType(request, pk, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getAllType(request, format=None):
+def getAllType(request):
 
     try:
         types = type.objects.all()
@@ -49,7 +48,7 @@ def getAllType(request, format=None):
 #-----------event-----------
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEvent(request, pk, format=None):
+def getEvent(request, pk):
 
     try:
         events = event.objects.get(pk=pk)
@@ -61,7 +60,7 @@ def getEvent(request, pk, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEventByMonth(request, format=None):
+def getEventByMonth(request):
 
     g = request.GET.get('group')
     print(g)
@@ -91,7 +90,7 @@ def getEventByMonth(request, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEventByDate(request, format=None):
+def getEventByDate(request):
 
     g = request.GET.get('group')
 
@@ -148,7 +147,7 @@ def getEventByType(request):
 #------------------------POST-------------------------
 @api_view(['POST'])
 @permission_classes([canCreate])
-def postEvent(request, format=None):
+def postEvent(request):
 
     serializer = eventSerializerDetail(data=request.data, context={'request': request})
     if serializer.is_valid():
@@ -159,7 +158,7 @@ def postEvent(request, format=None):
 
 @api_view(['POST'])
 @permission_classes([canCreate])
-def postType(request, format=None):
+def postType(request):
 
     serializer = typeSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
@@ -171,7 +170,7 @@ def postType(request, format=None):
 #-----------------------PATCH-------------------------
 @api_view(['PATCH'])
 @permission_classes([canCreate])
-def editEvent(request, pk, format=None):
+def editEvent(request, pk):
 
     try:
         events = event.objects.get(pk=pk)
@@ -188,7 +187,7 @@ def editEvent(request, pk, format=None):
 
 @api_view(['PATCH'])
 @permission_classes([canCreate])
-def editType(request, pk, format=None):
+def editType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)
@@ -204,7 +203,7 @@ def editType(request, pk, format=None):
 #-----------------------DELETE------------------------
 @api_view(['DELETE'])
 @permission_classes([canCreate])
-def delEvent(request, pk, format=None):
+def delEvent(request, pk):
 
     try:
         events = event.objects.get(pk=pk)
@@ -217,7 +216,7 @@ def delEvent(request, pk, format=None):
 
 @api_view(['DELETE'])
 @permission_classes([canCreate])
-def delType(request, pk, format=None):
+def delType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)
