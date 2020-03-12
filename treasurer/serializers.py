@@ -11,4 +11,4 @@ class memberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ['pk','name','isPay','treasurerList']
+        fields = ['pk','user','isPay','treasurerList']

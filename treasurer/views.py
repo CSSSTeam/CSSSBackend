@@ -1,4 +1,7 @@
+import json
+from django.http import JsonResponse
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.models import User
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -25,7 +28,7 @@ def getAllLists(request):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getAllMemberByLists(request):
+def getMemberByList(request):
 
     try:
         l = request.GET['list']
@@ -42,7 +45,7 @@ def getAllMemberByLists(request):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getAllMemberByUser(request):
+def getMemberByUser(request):
 
     try:
         u = request.GET['user']
@@ -59,7 +62,7 @@ def getAllMemberByUser(request):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getAllMemberByIsPay(request):
+def getMemberByIsPay(request):
 
     l = request.GET.get('list')
     u = request.GET.get('user')
@@ -106,6 +109,28 @@ def postMember(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#------------------------PUT-------------------------
+@api_view(['PUT'])
+@permission_classes([canCreate])
+def putMember(request):
+
+    try:
+        id = int(request.GET['list'])
+
+        users = User.objects.all()
+        lists = List.objects.get(pk=id)
+    except (User.DoesNotExist, List.DoesNotExist):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except (ValueError, MultiValueDictKeyError):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    for u in users :
+        member = Member.objects.get_or_create(user=u,treasurerList=lists)[0]
+        member.save()
+
+    return Response(status=status.HTTP_201_CREATED)
+
 
 #-----------------------PATCH-------------------------
 @api_view(['PATCH'])
