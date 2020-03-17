@@ -13,11 +13,6 @@ from events.permission import canCreate, canShow
 from events.serializers import eventSerializer, typeSerializer, eventSerializerDetail
 from events.models import event, type
 
-#------------------------GET-------------------------
-@api_view(['GET'])
-def now(request):
-    response = {"date": timezone.now()}
-    return Response(response)
 
 #-----------Type-----------
 @api_view(['GET'])

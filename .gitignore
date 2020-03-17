@@ -4,6 +4,7 @@
 /events/migrations/
 /timetable/migrations/
 /treasurer/migrations/
+/other/migrations/
 /mysite/key.txt
 /staticfiles/uploaded_files/*
 .idea/
