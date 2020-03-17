@@ -12,7 +12,7 @@ from timetable import urls as timetableURLs
 from treasurer import urls as treasurerURLs
 from other import urls as otherURLs
 
-import mysite.subsystems
+import mysite.subsystems as threadSystem
 
 urlpatterns = [
     path('auth/', ObtainAuthToken.as_view()),
@@ -25,3 +25,5 @@ urlpatterns = [
     path('servis/', include(otherURLs)),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
+
+threadSystem.startTreading()
