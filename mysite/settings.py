@@ -36,7 +36,7 @@ else:
     SECRET_KEY_FILE.close()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['csssinf.herokuapp.com']
 
@@ -131,8 +131,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/staticfiles/'
-MEDIA_ROOT = '.' + STATIC_URL + 'uploaded_files/'
+MEDIA_URL = '/uploaded_files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files/')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())
-
