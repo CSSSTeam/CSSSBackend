@@ -6,24 +6,18 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 
-from fileSystem.permission import canCreate, canShow
+from events.permission import canCreate, canShow
 from events.serializers import eventSerializer, typeSerializer, eventSerializerDetail
 from events.models import event, type
 
-#------------------------GET-------------------------
-
-@api_view(['GET'])
-def now(request):
-    response = {"date": timezone.now()}
-    return Response(response)
 
 #-----------Type-----------
 @api_view(['GET'])
 @permission_classes([canShow])
-def getType(request, pk, format=None):
+def getType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)
@@ -35,7 +29,7 @@ def getType(request, pk, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getAllType(request, format=None):
+def getAllType(request):
 
     try:
         types = type.objects.all()
@@ -49,7 +43,7 @@ def getAllType(request, format=None):
 #-----------event-----------
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEvent(request, pk, format=None):
+def getEvent(request, pk):
 
     try:
         events = event.objects.get(pk=pk)
@@ -61,7 +55,7 @@ def getEvent(request, pk, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEventByMonth(request, format=None):
+def getEventByMonth(request):
 
     g = request.GET.get('group')
     print(g)
@@ -91,7 +85,7 @@ def getEventByMonth(request, format=None):
 
 @api_view(['GET'])
 @permission_classes([canShow])
-def getEventByDate(request, format=None):
+def getEventByDate(request):
 
     g = request.GET.get('group')
 
@@ -148,7 +142,7 @@ def getEventByType(request):
 #------------------------POST-------------------------
 @api_view(['POST'])
 @permission_classes([canCreate])
-def postEvent(request, format=None):
+def postEvent(request):
 
     serializer = eventSerializerDetail(data=request.data, context={'request': request})
     if serializer.is_valid():
@@ -156,26 +150,10 @@ def postEvent(request, format=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-@permission_classes([canCreate])
-def editEvent(request, pk, format=None):
-
-    try:
-        events = event.objects.get(pk=pk)
-    except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = eventSerializerDetail(events,data=request.data, context={'request': request})
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 @api_view(['POST'])
 @permission_classes([canCreate])
-def postType(request, format=None):
+def postType(request):
 
     serializer = typeSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
@@ -183,25 +161,44 @@ def postType(request, format=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+
+#-----------------------PATCH-------------------------
+@api_view(['PATCH'])
 @permission_classes([canCreate])
-def editType(request, pk, format=None):
+def editEvent(request, pk):
+
+    try:
+        events = event.objects.get(pk=pk)
+    except event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = eventSerializerDetail(events,data=request.data, context={'request': request}, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['PATCH'])
+@permission_classes([canCreate])
+def editType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)
     except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = typeSerializer(types,data=request.data, context={'request': request})
+    serializer = typeSerializer(types,data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #-----------------------DELETE------------------------
 @api_view(['DELETE'])
 @permission_classes([canCreate])
-def delEvent(request, pk, format=None):
+def delEvent(request, pk):
 
     try:
         events = event.objects.get(pk=pk)
@@ -214,7 +211,7 @@ def delEvent(request, pk, format=None):
 
 @api_view(['DELETE'])
 @permission_classes([canCreate])
-def delType(request, pk, format=None):
+def delType(request, pk):
 
     try:
         types = type.objects.get(pk=pk)

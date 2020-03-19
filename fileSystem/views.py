@@ -118,28 +118,12 @@ def postFile(request, format=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 # Save file
 def SaveFile(name, f):
     with open(name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     return name
-
-
-@api_view(['POST'])
-@permission_classes([canCreate])
-def editFile(request, pk, format=None):
-    try:
-        files = file.objects.get(pk=pk)
-    except file.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = fileSerializerDetail(files, data=request.data, context={'request': request})
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -152,7 +136,23 @@ def postType(request, format=None):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+# -----------------------PATCH------------------------
+@api_view(['PATCH'])
+@permission_classes([canCreate])
+def editFile(request, pk, format=None):
+    try:
+        files = file.objects.get(pk=pk)
+    except file.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = fileSerializerDetail(files, data=request.data, context={'request': request}, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
 @permission_classes([canCreate])
 def editType(request, pk, format=None):
     try:
@@ -160,10 +160,10 @@ def editType(request, pk, format=None):
     except type.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = typeSerializer(types, data=request.data, context={'request': request})
+    serializer = typeSerializer(types, data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

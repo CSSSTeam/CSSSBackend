@@ -5,7 +5,10 @@ def getUser(request):
     tok = request.headers.get('Authorization')
     if tok is None:
         return None
-    user_object = Token.objects.get(key=tok[6:len(tok)])
+    try:
+        user_object = Token.objects.get(key=tok[6:len(tok)])
+    except Token.DoesNotExist:
+        return None
     if user_object is None:
         return None
     return user_object.user
@@ -15,7 +18,10 @@ def deleteToken(request):
     tok = request.headers.get('Authorization')
     if tok is None:
         return
-    user_object = Token.objects.get(key=tok[6:len(tok)])
+    try:
+        user_object = Token.objects.get(key=tok[6:len(tok)])
+    except Token.DoesNotExist:
+        return 
     if user_object is None:
         return
     user_object.delete()
