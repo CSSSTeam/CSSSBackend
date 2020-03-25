@@ -15,10 +15,6 @@ def createUser(username, password, first_name="", last_name="", email="", groups
     user.save()
     return user
 
-def createPerm(permissions=[]):
-    contentType = ContentType.objects.get_or_create(app_label='events', model='event')
-    for permission in permissions:
-        perm = Permission.objects.get_or_create(codename=permission, name=permission, content_type=contentType)
 
 def createGroup(name, permissions=[]):
     group = Group.objects.get_or_create(name=name)[0]
@@ -28,12 +24,17 @@ def createGroup(name, permissions=[]):
     group.save()
     return group
 
-createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
+#def createPerm(permissions=[]):
+#    contentType = ContentType.objects.get_or_create(app_label='events', model='event')
+#    for permission in permissions:
+#        perm = Permission.objects.get_or_create(codename=permission, name=permission, content_type=contentType)
 
-studentPermissions = ["change_user", "view_lesson", "fileSystem.show","events.show"]
-treasurerPermissions = studentPermissions + ["treasurer.show", "treasurer.create"]
+#createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
+
+studentPermissions = ["change_user", "view_lesson","events.show"]#,"fileSystem.show"]
+treasurerPermissions = studentPermissions #+ ["treasurer.show", "treasurer.create"]
 moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
-adminPermissions = moderatorPermissions + ["events.create", "fileSystem.create","treasurer.show", "treasurer.create"]
+adminPermissions = moderatorPermissions + ["events.create"]#, "fileSystem.create","treasurer.show", "treasurer.create"]
 student = createGroup(name="Student", permissions=studentPermissions)
 treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
 president = createGroup(name="President")

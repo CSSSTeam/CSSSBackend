@@ -27,8 +27,9 @@ urlpatterns = [
 ]
 
 #------------------------------Subsystems------------------------------
-from mysite import generateData
 
+#from mysite import generateData
+    
 flag = True;
 try:
     codeGroups = {
