@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from timetable.models import dayOfWeek, Lesson, HourLesson
 from timetable.views import setTimetable4day, createHourLessons, setTimetable4dayfromAPI
 
+
 codeGroups = {
     "eng1": Group.objects.get(name="English Group 1").id,
     "eng2": Group.objects.get(name="English Group 2").id,
@@ -45,7 +46,6 @@ def updatingTimetable():
     res = conn.getresponse()
     data = json.loads(res.read())
     HourLesson.objects.all().delete()
-    print(data)
 
     for hour in data['periods']:
         createHourLessons(hour, hour['num'])

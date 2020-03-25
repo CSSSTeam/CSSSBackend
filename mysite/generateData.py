@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from fileSystem.models import file, type
 from django.utils import timezone
 
@@ -14,6 +15,10 @@ def createUser(username, password, first_name="", last_name="", email="", groups
     user.save()
     return user
 
+def createPerm(permissions=[]):
+    contentType = ContentType.objects.get_or_create(app_label='events', model='event')
+    for permission in permissions:
+        perm = Permission.objects.get_or_create(codename=permission, name=permission, content_type=contentType)
 
 def createGroup(name, permissions=[]):
     group = Group.objects.get_or_create(name=name)[0]
@@ -23,31 +28,18 @@ def createGroup(name, permissions=[]):
     group.save()
     return group
 
+createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
 
-def createFile(name="", description="", fileType="", upload="", author=""):
-    files = file.objects.get_or_create(name=name, fileType=fileType)[0]
-    files.description = description
-    files.upload = upload
-    files.date = timezone.now()
-    files.save()
-    return files
-
-
-def createType(name=""):
-    type = type.objects.get_or_create(name=name)[0]
-    type.save()
-    return type
-
-
-studentPermissions = ["change_user", "view_lesson"]
-treasurerPermissions = studentPermissions
+studentPermissions = ["change_user", "view_lesson", "fileSystem.show","events.show"]
+treasurerPermissions = studentPermissions + ["treasurer.show", "treasurer.create"]
 moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
+adminPermissions = moderatorPermissions + ["events.create", "fileSystem.create","treasurer.show", "treasurer.create"]
 student = createGroup(name="Student", permissions=studentPermissions)
 treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
 president = createGroup(name="President")
 vicePresident = createGroup(name="Vice President")
 moderator = createGroup(name="Moderator", permissions=moderatorPermissions)
-admin = createGroup(name="Admin")
+admin = createGroup(name="Admin", permissions=adminPermissions)
 
 englishGr1 = createGroup(name="English Group 1")
 englishGr2 = createGroup(name="English Group 2")
