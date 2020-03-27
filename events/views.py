@@ -69,7 +69,7 @@ def getEventByMonth(request):
         s = datetime(year=y,month=m,day=1)
         e = datetime(year=y,month=m,day=EndDay)
 
-        query = Q(dateEnd__gte=s,dateStart__lte=s) or Q(dateEnd__gte=e,dateStart__lte=e) or Q(dateEnd__lte=e,dateStart__gte=s)
+        query = Q(dateEnd__gte=s,dateStart__lte=e) or Q(dateEnd__gte=s,dateStart__lte=e) or Q(dateEnd__gte=e,dateStart__lte=s)
 
         if(g is None):
             events = event.objects.filter(query)
@@ -94,7 +94,10 @@ def getEventByDate(request):
         s = datetime.strptime(request.GET['start'], '%Y-%m-%d')
         e = datetime.strptime(request.GET['end'], '%Y-%m-%d')
 
-        query = Q(dateEnd__gte=s,dateStart__lte=s) or Q(dateEnd__gte=e,dateStart__lte=e) or Q(dateEnd__lte=e,dateStart__gte=s)
+        if(s>e):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        query = Q(dateEnd__gte=s,dateStart__lte=e) or Q(dateEnd__gte=s,dateStart__lte=e) or Q(dateEnd__gte=e,dateStart__lte=s)
 
         if(g is None):
             events = event.objects.filter(query)
