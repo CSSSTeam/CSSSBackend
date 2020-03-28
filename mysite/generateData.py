@@ -1,7 +1,8 @@
+import threading
+
+from django.utils import timezone
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from fileSystem.models import file, type
-from django.utils import timezone
 
 
 def createUser(username, password, first_name="", last_name="", email="", groups=[]):
@@ -18,6 +19,7 @@ def createUser(username, password, first_name="", last_name="", email="", groups
 
 def createGroup(name, permissions=[]):
     group = Group.objects.get_or_create(name=name)[0]
+    return group
     for permission in permissions:
         perm = Permission.objects.get(codename=permission)
         group.permissions.add(perm)
@@ -31,33 +33,43 @@ def createGroup(name, permissions=[]):
 
 #createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
 
+
 studentPermissions = ["change_user", "view_lesson","events.show"]#,"fileSystem.show"]
 treasurerPermissions = studentPermissions #+ ["treasurer.show", "treasurer.create"]
 moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
 adminPermissions = moderatorPermissions + ["events.create"]#, "fileSystem.create","treasurer.show", "treasurer.create"]
-student = createGroup(name="Student", permissions=studentPermissions)
-treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
-president = createGroup(name="President")
-vicePresident = createGroup(name="Vice President")
-moderator = createGroup(name="Moderator", permissions=moderatorPermissions)
-admin = createGroup(name="Admin", permissions=adminPermissions)
 
-englishGr1 = createGroup(name="English Group 1")
-englishGr2 = createGroup(name="English Group 2")
-germanyGr1 = createGroup(name="Germany Group 1")
-germanyGr2 = createGroup(name="Germany Group 2")
-utk1 = createGroup(name="utk1")
-utk2 = createGroup(name="utk2")
-utk3 = createGroup(name="utk3")
-wf1 = createGroup(name="wf1")
-wf2 = createGroup(name="wf2")
-wfGirls = createGroup(name="wfGirls")
+def generate():
+    student = createGroup(name="Student", permissions=studentPermissions)
+    treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
+    president = createGroup(name="President")
+    vicePresident = createGroup(name="Vice President")
+    moderator = createGroup(name="Moderator", permissions=moderatorPermissions)
+    admin = createGroup(name="Admin", permissions=adminPermissions)
 
-createUser(username="user1", password="admin", first_name="admin", last_name="toor",
-           email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
-createUser(username="user2", password="admin", first_name="Steve", last_name="Jobs",
-           email="stevejobs@apple.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
-createUser(username="user3", password="admin", first_name="Steve", last_name="Jobs",
-           email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
-createUser(username="user4", password="admin", first_name="Steve", last_name="Jobs",
-           email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
+    englishGr1 = createGroup(name="English Group 1")
+    englishGr2 = createGroup(name="English Group 2")
+    germanyGr1 = createGroup(name="Germany Group 1")
+    germanyGr2 = createGroup(name="Germany Group 2")
+    utk1 = createGroup(name="utk1")
+    utk2 = createGroup(name="utk2")
+    utk3 = createGroup(name="utk3")
+    wf1 = createGroup(name="wf1")
+    wf2 = createGroup(name="wf2")
+    wfGirls = createGroup(name="wfGirls")
+
+    createUser(username="user1", password="admin", first_name="admin", last_name="toor",
+               email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
+    createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
+               email="ihateapple@gmail.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
+    createUser(username="user3", password="I_hate_apple", first_name="Siergi", last_name="Brin",
+               email="google@gmail.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
+    createUser(username="Steve", password="apple1234", first_name="Steve", last_name="Jobs",
+               email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
+
+def treadFunction():
+    generate()
+
+def startTreading():
+    thread = threading.Thread(target=treadFunction)
+    thread.start()

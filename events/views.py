@@ -182,7 +182,6 @@ def editEvent(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['PATCH'])
 @permission_classes([canCreate])
 def editType(request, pk):
