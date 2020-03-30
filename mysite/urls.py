@@ -1,5 +1,8 @@
 from django.conf.urls import url
+from django.conf import settings
 from django.urls import include, path
+from django.conf.urls.static import static
+from django.views.static import serve
 from django.views.generic.base import TemplateView
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -21,6 +24,7 @@ urlpatterns = [
     path('timetable/', include(timetableURLs)),
     path('treasurer/', include(treasurerURLs)),
     path('servis/', include(otherURLs)),
+    url(r'^uploaded_files/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
 

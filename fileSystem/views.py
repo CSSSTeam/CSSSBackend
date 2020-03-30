@@ -108,12 +108,12 @@ def postFile(request, format=None):
     except MultiValueDictKeyError:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    request.data['upload'] = settings.MEDIA_ROOT + str(request.data['upload'])
+    request.data['upload'] = str(request.data['upload'])
     serializer = fileSerializerDetail(data=request.data, context={'request': request})
 
     if serializer.is_valid():
         serializer.save()
-        SaveFile(request.data['upload'], f)
+        SaveFile(settings.MEDIA_ROOT + request.data['upload'], f)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
