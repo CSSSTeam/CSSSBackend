@@ -11,7 +11,7 @@ from users.utility import getUser, deleteToken
 from rest_framework import status
 
 
-# --------Users----------------------------------------
+# ---------------------Users--------------------------
 class currentUserAdmin(APIView):
     permission_classes = [canAdministionOnCurrent]
 
@@ -22,7 +22,7 @@ class currentUserAdmin(APIView):
 
     def delete(self, request, pk):
         User.objects.get(id=pk).delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class detailsUser(APIView):
@@ -72,7 +72,7 @@ class currentGroupAdmin(APIView):
             Group.objects.get(id=pk).delete()
         except Exception as e:
             print(str(e))
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AdministrationGroup(APIView):

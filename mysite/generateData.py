@@ -58,6 +58,8 @@ def generate():
     wf2 = createGroup(name="wf2")
     wfGirls = createGroup(name="wfGirls")
 
+    createUser(username="admin", password="admin", first_name="admin", last_name="toor",
+               email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="user1", password="admin", first_name="admin", last_name="toor",
                email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
