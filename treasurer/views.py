@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.utils.datastructures import MultiValueDictKeyError
+from django.conf import settings
 from django.contrib.auth.models import User
 
 from rest_framework.response import Response
@@ -20,7 +21,7 @@ def getAllLists(request):
     try:
         lists = List.objects.all()
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
     serializer = listSerializer(lists, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -35,9 +36,9 @@ def getMemberByList(request):
 
         members = Member.objects.filter(treasurerList = l)
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
     except MultiValueDictKeyError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = memberSerializer(members, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -52,9 +53,9 @@ def getMemberByUser(request):
 
         members = Member.objects.filter(user = u)
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
     except MultiValueDictKeyError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = memberSerializer(members, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -81,9 +82,9 @@ def getMemberByIsPay(request):
             else:
                 members = Member.objects.filter(isPay = i, user=u, treasurerList = l)
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
     except MultiValueDictKeyError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = memberSerializer(members, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -121,15 +122,15 @@ def putMember(request):
         users = User.objects.all()
         lists = List.objects.get(pk=id)
     except (User.DoesNotExist, List.DoesNotExist):
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
     except (ValueError, MultiValueDictKeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
     for u in users :
         member = Member.objects.get_or_create(user=u,treasurerList=lists)[0]
         member.save()
 
-    return Response(status=status.HTTP_201_CREATED)
+    return Response(settings.ERROR_MESSAGE_201, status=status.HTTP_201_CREATED)
 
 
 #-----------------------PATCH-------------------------
@@ -140,7 +141,7 @@ def editList(request, pk):
     try:
         lists = List.objects.get(pk=pk)
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
     serializer = listSerializer(lists,data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
@@ -156,7 +157,7 @@ def editMember(request, pk):
     try:
         members = Member.objects.get(pk=pk)
     except Member.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
     serializer = memberSerializer(members,data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
@@ -172,10 +173,10 @@ def delList(request, pk):
     try:
         lists = List.objects.get(pk=pk)
     except List.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
     lists.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['DELETE'])
@@ -185,7 +186,7 @@ def delMember(request, pk):
     try:
         members = Member.objects.get(pk=pk)
     except Member.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
     members.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)

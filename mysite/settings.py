@@ -138,3 +138,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/media/')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())
+
+# Error Mesages
+ERROR_MESSAGE_404={"detail": "Not found object."}
+ERROR_MESSAGE_400={"detail": "Bad parameters."}
+ERROR_MESSAGE_204={"detail": "Object deleted."}
+ERROR_MESSAGE_201={"detail": "Objects created."}

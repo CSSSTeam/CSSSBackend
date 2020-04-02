@@ -1,6 +1,7 @@
 import calendar
 from datetime import datetime
 
+from django.conf import settings
 from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
@@ -13,7 +14,6 @@ from events.permission import canCreate, canShow
 from events.serializers import eventSerializer, typeSerializer, eventSerializerDetail
 from events.models import event, type
 
-
 #-----------Type-----------
 @api_view(['GET'])
 @permission_classes([canShow])
@@ -22,7 +22,7 @@ def getType(request, pk):
     try:
         types = type.objects.get(pk=pk)
     except type.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     serializer = typeSerializer(types, context={'request': request})
     return Response(serializer.data)
@@ -34,7 +34,7 @@ def getAllType(request):
     try:
         types = type.objects.all()
     except type.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     serializer = typeSerializer(types, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -48,7 +48,7 @@ def getEvent(request, pk):
     try:
         events = event.objects.get(pk=pk)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     
     serializer = eventSerializerDetail(events, context={'request': request})
     return Response(serializer.data)
@@ -76,9 +76,9 @@ def getEventByMonth(request):
         else:
             events = event.objects.filter(query,group=g)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     except (ValueError, MultiValueDictKeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400,status=status.HTTP_400_BAD_REQUEST)
 
     serializer = eventSerializer(events, context={'request': request}, many=True)
     return Response(serializer.data)
@@ -104,9 +104,9 @@ def getEventByDate(request):
         else:
             events = event.objects.filter(query,group=g)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     except (ValueError, MultiValueDictKeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400,status=status.HTTP_400_BAD_REQUEST)
     
 
     serializer = eventSerializer(events, context={'request': request}, many=True)
@@ -120,9 +120,9 @@ def searchEvent(request):
 
         events = event.objects.filter(Q(name__contains=s) or Q(description__contains=s))
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     except MultiValueDictKeyError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400,status=status.HTTP_400_BAD_REQUEST)
 
     serializer = eventSerializer(events, many=True)
     return Response(serializer.data)
@@ -135,9 +135,9 @@ def getEventByType(request):
 
         events = event.objects.filter(eventType=t)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     except (ValueError, MultiValueDictKeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(settings.ERROR_MESSAGE_400,status=status.HTTP_400_BAD_REQUEST)
 
     serializer = eventSerializer(events, many=True)
     return Response(serializer.data)
@@ -173,7 +173,7 @@ def editEvent(request, pk):
     try:
         events = event.objects.get(pk=pk)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     serializer = eventSerializerDetail(events,data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
@@ -189,7 +189,7 @@ def editType(request, pk):
     try:
         types = type.objects.get(pk=pk)
     except type.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     serializer = typeSerializer(types,data=request.data, context={'request': request}, partial=True)
     if serializer.is_valid():
@@ -205,10 +205,10 @@ def delEvent(request, pk):
     try:
         events = event.objects.get(pk=pk)
     except event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     events.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(settings.ERROR_MESSAGE_204,status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['DELETE'])
@@ -218,7 +218,7 @@ def delType(request, pk):
     try:
         types = type.objects.get(pk=pk)
     except type.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
     types.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(settings.ERROR_MESSAGE_204,status=status.HTTP_204_NO_CONTENT)

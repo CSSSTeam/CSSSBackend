@@ -12,8 +12,9 @@ class event (models.Model):
     dateEnd = models.DateTimeField(default=timezone.now)
     eventType = models.ForeignKey('type', blank=True, null=True, on_delete=models.CASCADE, default='')
     group = models.ForeignKey('auth.group', blank=True, null=True, on_delete=models.CASCADE, default='')
-    class Meta:
-        permissions = [
-            ("show", "Can change the status of tasks"),
-            ("create", "Can remove a task by setting its status as closed"),
-        ]
+
+    #class Meta:
+    #    permissions = [
+    #        ("show", "Can change the status of tasks"),
+    #        ("create", "Can remove a task by setting its status as closed"),
+    #    ]
