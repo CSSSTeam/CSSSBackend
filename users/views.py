@@ -44,7 +44,7 @@ class AdministrationUser(APIView):
         return Response(userSerialized.data)
 
     def post(self, request):
-        newUser = UserCreator(data=request.data)
+        newUser = UserCreator(data=request.data, many=True)
         try:
             newUser.is_valid(True)
         except Exception as e:

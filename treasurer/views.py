@@ -127,7 +127,7 @@ def putMember(request):
         return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
     for u in users :
-        member = Member.objects.get_or_create(user=u,treasurerList=lists)[0]
+        member = Member.objects.get_or_create(user=u,treasurerList=lists)
         member.save()
 
     return Response(settings.ERROR_MESSAGE_201, status=status.HTTP_201_CREATED)
