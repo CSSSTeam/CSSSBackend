@@ -19,25 +19,31 @@ def createUser(username, password, first_name="", last_name="", email="", groups
 
 def createGroup(name, permissions=[]):
     group = Group.objects.get_or_create(name=name)[0]
-    return group
+
     for permission in permissions:
         perm = Permission.objects.get(codename=permission)
         group.permissions.add(perm)
+
     group.save()
     return group
 
-#def createPerm(permissions=[]):
+
+# def createPerm(permissions=[]):
 #    contentType = ContentType.objects.get_or_create(app_label='events', model='event')
 #    for permission in permissions:
 #        perm = Permission.objects.get_or_create(codename=permission, name=permission, content_type=contentType)
 
-#createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
+# createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
 
 
-studentPermissions = ["change_user", "view_lesson","events.show"]#,"fileSystem.show"]
-treasurerPermissions = studentPermissions #+ ["treasurer.show", "treasurer.create"]
+studentPermissions = ["change_user", "view_lesson"]  # , "events.show"]  # ,"fileSystem.show"]
+treasurerPermissions = studentPermissions  # + ["treasurer.show", "treasurer.create"]
 moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
-adminPermissions = moderatorPermissions + ["events.create"]#, "fileSystem.create","treasurer.show", "treasurer.create"]
+adminPermissions = moderatorPermissions  # + [
+
+
+# "events.create"]  # , "fileSystem.create","treasurer.show", "treasurer.create"]
+
 
 def generate():
     student = createGroup(name="Student", permissions=studentPermissions)
@@ -61,16 +67,18 @@ def generate():
     createUser(username="admin", password="admin", first_name="admin", last_name="toor",
                email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="user1", password="admin", first_name="admin", last_name="toor",
-               email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
+               email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
                email="ihateapple@gmail.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
     createUser(username="user3", password="I_hate_apple", first_name="Siergi", last_name="Brin",
-               email="google@gmail.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
+               email="google@gmail.com", groups=[treasurer, englishGr2, germanyGr2, utk3, wf2])
     createUser(username="Steve", password="apple1234", first_name="Steve", last_name="Jobs",
-               email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
+               email="stevejobs@apple.com", groups=[student, englishGr2, germanyGr1, utk3, wfGirls])
+
 
 def treadFunction():
     generate()
+
 
 def startTreading():
     thread = threading.Thread(target=treadFunction)
