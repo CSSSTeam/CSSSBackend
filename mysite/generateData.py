@@ -26,6 +26,7 @@ def createGroup(name, permissions=[]):
     for permission in permissions:
         perm = Permission.objects.get(codename=permission)
         group.permissions.add(perm)
+
     group.save()
     return group
 
@@ -74,16 +75,18 @@ def generate():
     createUser(username="admin", password="admin", first_name="admin", last_name="toor",
                email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="user1", password="admin", first_name="admin", last_name="toor",
-               email="admin@admin.com", groups=[moderator, englishGr1, germanyGr2, utk1, wf1])
+               email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
     createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
                email="ihateapple@gmail.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
     createUser(username="user3", password="I_hate_apple", first_name="Siergi", last_name="Brin",
-               email="google@gmail.com", groups=[moderator, englishGr2, germanyGr2, utk3, wf2])
+               email="google@gmail.com", groups=[treasurer, englishGr2, germanyGr2, utk3, wf2])
     createUser(username="Steve", password="apple1234", first_name="Steve", last_name="Jobs",
-               email="stevejobs@apple.com", groups=[moderator, englishGr2, germanyGr1, utk3, wfGirls])
+               email="stevejobs@apple.com", groups=[student, englishGr2, germanyGr1, utk3, wfGirls])
+
 
 def treadFunction():
     generate()
+
 
 def startTreading():
     thread = threading.Thread(target=treadFunction)
