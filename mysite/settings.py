@@ -36,7 +36,7 @@ else:
     SECRET_KEY_FILE.close()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['csssinf.herokuapp.com']
 
@@ -134,7 +134,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/staticfiles/'
 MEDIA_URL = '/uploaded_files/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files/')
+MEDIA_ROOT = os.path.join(BASE_DIR, '/media/')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())
+
+# Error Mesages
+ERROR_MESSAGE_404={"detail": "Not found object."}
+ERROR_MESSAGE_400={"detail": "Bad parameters."}
+ERROR_MESSAGE_204={"detail": "Object deleted."}
+ERROR_MESSAGE_201={"detail": "Objects created."}

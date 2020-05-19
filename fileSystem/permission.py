@@ -6,9 +6,9 @@ from users.utility import userHasPerm
 class canShow(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        return userHasPerm(request, "filesystem.show")
+        return userHasPerm(request, "fileSystem.can_show_fileSystem")
 
 class canCreate(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        return userHasPerm(request, "filesystem.create")
+        return userHasPerm(request, "fileSystem.can_create_fileSystem")
