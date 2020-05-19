@@ -44,16 +44,14 @@ def setUpPerm():
 
     createPerm(permissions=permissionsToCreate, models=models, premName=premNameToCreate)
 
-def assignPerm():
-    studentPermissions = ["change_user", "view_lesson","can_show_events","can_show_fileSystem","can_show_treasurer"]
-    treasurerPermissions = studentPermissions + ["can_create_treasurer"]
-    moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
-    adminPermissions = moderatorPermissions + ["can_create_events", "can_create_fileSystem", "can_create_treasurer"]
-
 def generate():
 
     setUpPerm();
-    assignPerm();
+    
+    studentPermissions = ["change_user", "view_lesson","can_show_events","can_show_fileSystem","can_show_treasurer"]
+    treasurerPermissions = studentPermissions + ["can_create_treasurer"]
+    moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user","delete_user"]
+    adminPermissions = moderatorPermissions + ["can_create_events", "can_create_fileSystem", "can_create_treasurer"]
 
     student = createGroup(name="Student", permissions=studentPermissions)
     treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
