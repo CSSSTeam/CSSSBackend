@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User, Group
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.permission import canOperatingInfo, canAdministionOnCurrent, canAdministionUser
@@ -44,7 +45,7 @@ class AdministrationUser(APIView):
         return Response(userSerialized.data)
 
     def post(self, request):
-        newUser = UserCreator(data=request.data)
+        newUser = UserCreator(data=request.data, many=True)
         try:
             newUser.is_valid(True)
         except Exception as e:
@@ -52,10 +53,33 @@ class AdministrationUser(APIView):
 
         newUser.save()
         return Response(status=status.HTTP_201_CREATED)
+        
+class AdministrationUserGroup(APIView):
+    permission_classes = [canAdministionUser]
 
+    def post(self, request):
+        try:
+            userId = request.GET['user']
+            groupId = request.GET['group']
+
+            group = Group.objects.get(pk=groupId)
+            user = User.objects.get(pk=userId)
+
+        except (User.DoesNotExist, Group.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except  MultiValueDictKeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        group.user_set.add(user)
+        return Response(status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        # ----------------------------------------------
+        #  TO DO endpoint for removeng users from group
+        # ----------------------------------------------
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 # -------------Groups-----------------------------
-
 class currentGroupAdmin(APIView):
     permission_classes = [canAdministionOnCurrent]
 

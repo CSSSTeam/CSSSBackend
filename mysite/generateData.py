@@ -4,6 +4,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
+from events.models import event
+from fileSystem.models import file
+from treasurer.models import List
+
 
 def createUser(username, password, first_name="", last_name="", email="", groups=[]):
     user = User.objects.get_or_create(username=username)[0]
@@ -19,7 +23,6 @@ def createUser(username, password, first_name="", last_name="", email="", groups
 
 def createGroup(name, permissions=[]):
     group = Group.objects.get_or_create(name=name)[0]
-
     for permission in permissions:
         perm = Permission.objects.get(codename=permission)
         group.permissions.add(perm)
@@ -27,25 +30,30 @@ def createGroup(name, permissions=[]):
     group.save()
     return group
 
+def createPerm(permissions=[],models=[],premName=[]):
+    i = 0
+    for permission in permissions:
+        contentType = ContentType.objects.get_for_model(models[i])
+        for name in premName:
+            perm = Permission.objects.get_or_create(codename=name + permission, name=name + permission + "!", content_type=contentType)
+        i+=1
 
-# def createPerm(permissions=[]):
-#    contentType = ContentType.objects.get_or_create(app_label='events', model='event')
-#    for permission in permissions:
-#        perm = Permission.objects.get_or_create(codename=permission, name=permission, content_type=contentType)
+def setUpPerm():
+    premNameToCreate = ["can_create_", "can_show_"]
+    models = [event, file, List]
+    permissionsToCreate=["events", "fileSystem", "treasurer"]
 
-# createPerm(["fileSystem.show","events.show", "treasurer.show", "treasurer.create", "events.create", "fileSystem.create","treasurer.show", "treasurer.create"])
-
-
-studentPermissions = ["change_user", "view_lesson"]  # , "events.show"]  # ,"fileSystem.show"]
-treasurerPermissions = studentPermissions  # + ["treasurer.show", "treasurer.create"]
-moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user"]
-adminPermissions = moderatorPermissions  # + [
-
-
-# "events.create"]  # , "fileSystem.create","treasurer.show", "treasurer.create"]
-
+    createPerm(permissions=permissionsToCreate, models=models, premName=premNameToCreate)
 
 def generate():
+
+    setUpPerm();
+    
+    studentPermissions = ["change_user", "view_lesson","can_show_events","can_show_fileSystem","can_show_treasurer"]
+    treasurerPermissions = studentPermissions + ["can_create_treasurer"]
+    moderatorPermissions = studentPermissions + ["add_hourlesson", "add_lesson", "view_user", "add_user","delete_user"]
+    adminPermissions = moderatorPermissions + ["can_create_events", "can_create_fileSystem", "can_create_treasurer"]
+
     student = createGroup(name="Student", permissions=studentPermissions)
     treasurer = createGroup(name="Treasurer", permissions=treasurerPermissions)
     president = createGroup(name="President")

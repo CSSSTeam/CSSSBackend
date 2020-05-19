@@ -6,6 +6,6 @@ from users.utility import userHasPerm
 class canShow(permissions.BasePermission):
 
    def has_permission(self, request, view):
-        return userHasPerm(request, "other")
+        return userHasPerm(request, "other.other_perm")
 
 

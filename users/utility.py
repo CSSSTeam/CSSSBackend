@@ -6,7 +6,7 @@ def getUser(request):
     if tok is None:
         return None
     try:
-        user_object = Token.objects.get(key=tok[6:len(tok)])
+        user_object = Token.objects.get(key=tok.split(' ',1)[-1])
     except Token.DoesNotExist:
         return None
     if user_object is None:
@@ -19,7 +19,7 @@ def deleteToken(request):
     if tok is None:
         return
     try:
-        user_object = Token.objects.get(key=tok[6:len(tok)])
+        user_object = Token.objects.get(key=tok.split(' ',1)[-1])
     except Token.DoesNotExist:
         return
     if user_object is None:
