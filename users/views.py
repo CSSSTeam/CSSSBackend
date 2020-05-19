@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.permission import canOperatingInfo, canAdministionOnCurrent, canAdministionUser
 from users.serializers import UserSerializer, UserDisplaySerializer, UserCreator, GroupSerializer, \
-    GroupDisplaySerializer, GroupCreator, changePasswordSerializer
+    GroupDisplaySerializer, GroupCreator, ChangePasswordSerializer
 from users.utility import getUser, deleteToken
 from rest_framework import status
 
@@ -21,7 +21,8 @@ class currentUserAdmin(APIView):
         return Response(userSerialized.data)
 
     def delete(self, request, pk):
-        User.objects.get(id=pk).delete()
+        User.objects.filter(id=pk).delete()
+
         return Response(status=status.HTTP_200_OK)
 
 
@@ -38,7 +39,7 @@ class changePassword(APIView):
     permission_classes = [canOperatingInfo]
 
     def post(self, request):
-        changePassword = changePasswordSerializer(data=request.data)
+        changePassword = ChangePasswordSerializer(data=request.data)
         try:
             changePassword.is_valid(True)
         except Exception as e:
@@ -48,7 +49,7 @@ class changePassword(APIView):
         if not user.check_password(changePassword.validated_data['oldPass']):
             return Response({"error": "Old Password not be correct"}, status=status.HTTP_401_UNAUTHORIZED)
         if not changePassword.validated_data['newPass'] == changePassword.validated_data['newPass2']:
-            return Response({"error": "New Password is different"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "New Password is different"}, status=status.HTTP_417_EXPECTATION_FAILED)
 
         user.set_password(changePassword.validated_data['newPass'])
         user.save()
@@ -65,7 +66,7 @@ class AdministrationUser(APIView):
         return Response(userSerialized.data)
 
     def post(self, request):
-        newUser = UserCreator(data=request.data)
+        newUser = UserCreator(data=request.data, many=True)
         try:
             newUser.is_valid(True)
         except Exception as e:

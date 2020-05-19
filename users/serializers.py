@@ -89,7 +89,7 @@ class UserSerializer(serializers.Serializer):
     groups = GroupSerializer(many=True)
 
 
-class changePasswordSerializer(serializers.Serializer):
+class ChangePasswordSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 
