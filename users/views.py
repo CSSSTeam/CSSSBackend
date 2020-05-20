@@ -74,10 +74,20 @@ class AdministrationUserGroup(APIView):
         return Response(status=status.HTTP_200_OK)
     
     def delete(self, request):
-        # ----------------------------------------------
-        #  TO DO endpoint for removeng users from group
-        # ----------------------------------------------
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            userId = request.GET['user']
+            groupId = request.GET['group']
+
+            group = Group.objects.get(pk=groupId)
+            user = User.objects.get(pk=userId)
+
+        except (User.DoesNotExist, Group.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except  MultiValueDictKeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        group.user_set.remove(user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # -------------Groups-----------------------------
 class currentGroupAdmin(APIView):
