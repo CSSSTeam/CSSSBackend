@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.permission import canOperatingInfo, canAdministionOnCurrent, canAdministionUser
 from users.serializers import UserSerializer, UserDisplaySerializer, UserCreator, GroupSerializer, \
-    GroupDisplaySerializer, GroupCreator
+    GroupDisplaySerializer, GroupCreator, ChangePasswordSerializer
 from users.utility import getUser, deleteToken
 from rest_framework import status
 
@@ -25,7 +25,6 @@ class currentUserAdmin(APIView):
         User.objects.get(id=pk).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class detailsUser(APIView):
     permission_classes = [canOperatingInfo]
 
@@ -33,6 +32,27 @@ class detailsUser(APIView):
         user = getUser(request)
         content = UserDisplaySerializer(user)
         return Response(content.data)
+
+
+class changePassword(APIView):
+    permission_classes = [canOperatingInfo]
+
+    def post(self, request):
+        changePassword = ChangePasswordSerializer(data=request.data)
+        try:
+            changePassword.is_valid(True)
+        except Exception as e:
+            return Response(changePassword.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = getUser(request)
+
+        if not user.check_password(changePassword.validated_data['oldPass']):
+            return Response({"error": "Old Password not be correct"}, status=status.HTTP_401_UNAUTHORIZED)
+        if not changePassword.validated_data['newPass'] == changePassword.validated_data['newPass2']:
+            return Response({"error": "New Password is different"}, status=status.HTTP_417_EXPECTATION_FAILED)
+
+        user.set_password(changePassword.validated_data['newPass'])
+        user.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 class AdministrationUser(APIView):
@@ -128,7 +148,8 @@ class AdministrationGroup(APIView):
         newGroup.save()
         return Response(status=status.HTTP_201_CREATED)
 
-#---------other---------------------------------------------------------
+
+# ---------other---------------------------------------------------------
 class logout(APIView):
     def post(self, request):
         deleteToken(request)

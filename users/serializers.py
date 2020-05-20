@@ -89,6 +89,18 @@ class UserSerializer(serializers.Serializer):
     groups = GroupSerializer(many=True)
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+    oldPass = serializers.CharField()
+    newPass = serializers.CharField()
+    newPass2 = serializers.CharField()
+
+
 class UserCreator(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
@@ -97,7 +109,7 @@ class UserCreator(serializers.Serializer):
         groups = None
         if 'groups' in validated_data:
             groups = validated_data['groups']
-        del validated_data['groups']
+#        del validated_data['groups']
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         if groups is not None:

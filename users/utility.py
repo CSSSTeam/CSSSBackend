@@ -21,7 +21,7 @@ def deleteToken(request):
     try:
         user_object = Token.objects.get(key=tok.split(' ',1)[-1])
     except Token.DoesNotExist:
-        return 
+        return
     if user_object is None:
         return
     user_object.delete()
@@ -29,6 +29,7 @@ def deleteToken(request):
 
 def userHasPerm(request, permission):
     user = getUser(request)
+
     if user is None:
         return False
     if user.has_perm(permission):
