@@ -134,7 +134,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/staticfiles/'
 MEDIA_URL = '/uploaded_files/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, '/media/')
+if DEBUG:
+    MEDIA_ROOT = './media/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())

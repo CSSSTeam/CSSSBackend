@@ -1,7 +1,5 @@
 from rest_framework import permissions
-
 from users.utility import userHasPerm
-
 
 class EventsPerm(permissions.BasePermission):
 
@@ -10,4 +8,3 @@ class EventsPerm(permissions.BasePermission):
             return userHasPerm(request, "events.can_show_events")
         else:
             return userHasPerm(request, "events.can_create_events")
-

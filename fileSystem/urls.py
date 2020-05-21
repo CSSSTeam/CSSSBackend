@@ -1,20 +1,12 @@
 from django.urls import include, path
-from fileSystem.views import getFile, getFileByType, getAllFile, postFile, getType, getAllType, postType, editFile, editType, delType, delFile, searchFile
+from fileSystem.views import File, FileByType, AllFile, SearchFile, FileType, AllFileType
 
 urlpatterns = [
-    path('file/<int:pk>/', getFile),
-    path('file/', getAllFile),
-    path('file/search/', searchFile),
-    path('file/type/', getFileByType),
-    path('type/<int:pk>/', getType),
-    path('type/', getAllType),
+    path('file/', AllFile.as_view()),
+    path('file/<int:pk>/', File.as_view()),
+    path('file/search/', SearchFile.as_view()),
+    path('file/type/', FileByType.as_view()),
 
-    path('file/add/', postFile),
-    path('type/add/', postType),
-
-    path('file/edit/<int:pk>/', editFile),
-    path('type/edit/<int:pk>/', editType),
-    
-    path('file/del/<int:pk>/', delFile),
-    path('type/del/<int:pk>/', delType),
+    path('type/', AllFileType.as_view()),
+    path('type/<int:pk>/', FileType.as_view()),
 ]

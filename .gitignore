@@ -347,3 +347,4 @@ ASALocalRun/
 .mfractor/
 *.pyproj
 *.sln
+/media

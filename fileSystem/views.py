@@ -1,192 +1,175 @@
-from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
-
 from django.db.models import Q
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 
-from fileSystem.permission import canCreate, canShow
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import FileUploadParser
+
+from fileSystem.permission import fileSystemPerm
 from fileSystem.serializers import fileSerializer, typeSerializer, fileSerializerDetail
 from fileSystem.models import file, type
 
 
-# ------------------------GET-------------------------
+# ----------------------------TYPE--------------------------------
+
+class FileType(APIView):
+    permission_classes = [fileSystemPerm]
+
+    def get(self, request, pk):
+        try:
+            types = type.objects.get(pk=pk)
+        except type.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = typeSerializer(types, context={'request': request})
+        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        try:
+            types = type.objects.get(pk=pk)
+        except type.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = typeSerializer(types, data=request.data, context={'request': request}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            types = type.objects.get(pk=pk)
+        except type.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+
+        types.delete()
+        return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
+
+class AllFileType(APIView):
+    permission_classes = [fileSystemPerm]
+
+    def get(self, request):
+        try:
+            types = type.objects.all()
+        except type.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = typeSerializer(types, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = typeSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# -----------Type-----------
-@api_view(['GET'])
-@permission_classes([canShow])
-def getType(request, pk, format=None):
-    try:
-        types = type.objects.get(pk=pk)
-    except type.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+# ----------------------------FILE--------------------------------
 
-    serializer = typeSerializer(types, context={'request': request})
-    return Response(serializer.data)
+class File(APIView):
+    permission_classes = [fileSystemPerm]
 
+    def get(self, request, pk):
+        try:
+            files = file.objects.get(pk=pk)
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-@permission_classes([canShow])
-def getAllType(request, format=None):
-    try:
-        types = type.objects.all()
-    except type.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+        serializer = fileSerializerDetail(files, context={'request': request})
+        return Response(serializer.data)
 
-    serializer = typeSerializer(types, context={'request': request}, many=True)
-    return Response(serializer.data)
+    def patch(self, request, pk):
+        try:
+            files = file.objects.get(pk=pk)
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = fileSerializerDetail(files, data=request.data, context={'request': request}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# -----------File-----------
-@api_view(['GET'])
-@permission_classes([canShow])
-def getFile(request, pk, format=None):
-    try:
-        files = file.objects.get(pk=pk)
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+    def delete(self, request, pk):
+        try:
+            files = file.objects.get(pk=pk)
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = fileSerializerDetail(files, context={'request': request})
-    return Response(serializer.data)
+        files.delete()
+        return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
+class AllFile(APIView):
+    permission_classes = [fileSystemPerm]
+    #parser_classes = [FileUploadParser]
 
-@api_view(['GET'])
-@permission_classes([canShow])
-def getFileByType(request, format=None):
-    try:
-        t = request.GET['type']
+    def get(self, request):
+        try:
+            files = file.objects.all()
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
-        files = file.objects.filter(fileType=t)
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-    except MultiValueDictKeyError:
-        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
+        serializer = fileSerializer(files, context={'request': request}, many=True)
+        return Response(serializer.data)
 
-    serializer = fileSerializerDetail(files, context={'request': request}, many=True)
-    return Response(serializer.data)
+    def post(self, request):
+        try:
+            f = request.FILES['upload']
+        except MultiValueDictKeyError:
+            return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
+        request.data['upload'] = str(request.data['upload'])
+        serializer = fileSerializerDetail(data=request.data, context={'request': request})
 
-@api_view(['GET'])
-@permission_classes([canShow])
-def searchFile(request):
-    try:
-        s = request.GET['phrase']
+        if serializer.is_valid():
+            serializer.save()
+            SaveFile(settings.MEDIA_ROOT + request.data['upload'], f)
 
-        files = file.objects.filter(Q(name__contains=s) or Q(description__contains=s))
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-    except MultiValueDictKeyError:
-        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = fileSerializer(files, many=True)
-    return Response(serializer.data)
+class FileByType(APIView):
+    permission_classes = [fileSystemPerm]
 
+    def get(self, request):
+        try:
+            t = request.GET['type']
 
-@api_view(['GET'])
-@permission_classes([canShow])
-def getAllFile(request, format=None):
-    try:
-        files = file.objects.all()
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+            files = file.objects.filter(fileType=t)
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+        except MultiValueDictKeyError:
+            return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = fileSerializer(files, context={'request': request}, many=True)
-    return Response(serializer.data)
+        serializer = fileSerializerDetail(files, context={'request': request}, many=True)
+        return Response(serializer.data)
 
+class SearchFile(APIView):
+    permission_classes = [fileSystemPerm]
 
-# ------------------------POST-------------------------
-@api_view(['POST'])
-@permission_classes([canCreate])
-def postFile(request, format=None):
-    parser_classes = [FileUploadParser]
+    def get(self, request):
+        try:
+            s = request.GET['phrase']
 
-    try:
-        f = request.FILES['upload']
-    except MultiValueDictKeyError:
-        return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
+            files = file.objects.filter(Q(name__contains=s) or Q(description__contains=s))
+        except file.DoesNotExist:
+            return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
+        except MultiValueDictKeyError:
+            return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
 
-    request.data['upload'] = str(request.data['upload'])
-    serializer = fileSerializerDetail(data=request.data, context={'request': request})
+        serializer = fileSerializer(files, many=True)
+        return Response(serializer.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        SaveFile(settings.MEDIA_ROOT + request.data['upload'], f)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# Save file
+# ------------ Save file ------------
 def SaveFile(name, f):
     with open(name, 'wb+') as destination:
+        i=0
         for chunk in f.chunks():
             destination.write(chunk)
+            print("Uploading... ["+str(i)+" chunk]")
+            i+=1
+        print("Uploading... [DONE]")
     return name
-
-
-@api_view(['POST'])
-@permission_classes([canCreate])
-def postType(request, format=None):
-    serializer = typeSerializer(data=request.data, context={'request': request})
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# -----------------------PATCH------------------------
-@api_view(['PATCH'])
-@permission_classes([canCreate])
-def editFile(request, pk, format=None):
-    try:
-        files = file.objects.get(pk=pk)
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = fileSerializerDetail(files, data=request.data, context={'request': request}, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['PATCH'])
-@permission_classes([canCreate])
-def editType(request, pk, format=None):
-    try:
-        types = type.objects.get(pk=pk)
-    except type.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = typeSerializer(types, data=request.data, context={'request': request}, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# -----------------------DELETE------------------------
-@api_view(['DELETE'])
-@permission_classes([canCreate])
-def delFile(request, pk, format=None):
-    try:
-        files = file.objects.get(pk=pk)
-    except file.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-
-    files.delete()
-    return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['DELETE'])
-@permission_classes([canCreate])
-def delType(request, pk, format=None):
-    try:
-        types = type.objects.get(pk=pk)
-    except type.DoesNotExist:
-        return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
-
-    types.delete()
-    return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
