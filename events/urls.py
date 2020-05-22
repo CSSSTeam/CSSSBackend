@@ -1,22 +1,13 @@
 from django.urls import include, path
-from events.views import getEvent, postEvent, getType, getAllType, postType, getEventByMonth, getEventByDate, delEvent, \
-    delType, editEvent, editType, getEventByType, searchEvent
+from events.views import Event, AllEvent, EventByType, EventByMonth, SearchEvent, EventType, AllEventType
 
 urlpatterns = [
-    path('event/<int:pk>/', getEvent),
-    path('event/month/', getEventByMonth),
-    path('event/date/', getEventByDate),
-    path('event/search/', searchEvent),
-    path('event/type/', getEventByType),
-    path('type/<int:pk>/', getType),
-    path('type/', getAllType),
+    path('event/', AllEvent.as_view()),
+    path('event/<int:pk>/', Event.as_view()),
+    path('event/month/', EventByMonth.as_view()),
+    path('event/search/', SearchEvent.as_view()),
+    path('event/type/', EventByType.as_view()),
 
-    path('event/add/', postEvent),
-    path('type/add/', postType),
-
-    path('event/edit/<int:pk>/', editEvent),
-    path('type/edit/<int:pk>/', editType),
-
-    path('event/del/<int:pk>/', delEvent),
-    path('type/del/<int:pk>/', delType),
+    path('type/', AllEventType.as_view()),
+    path('type/<int:pk>/', EventType.as_view()),
 ]
