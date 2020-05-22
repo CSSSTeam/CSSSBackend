@@ -1,20 +1,12 @@
 from django.urls import include, path
-from treasurer.views import getAllLists, getMemberByIsPay, getMemberByUser, getMemberByList, postMember, postList, editList, editMember, delMember, delList, putMember
+from treasurer.views import vList, AllList, vMember, AllMember, MemberByIsPay, MemberByUser
 
 urlpatterns = [
-    path('list/', getAllLists),
-    path('member/pay/', getMemberByIsPay),
-    path('member/user/', getMemberByUser),
-    path('member/list/', getMemberByList),
+    path('list/', AllList.as_view()),
+    path('list/<int:pk>/', vList.as_view()),
 
-    path('list/add/', postList),
-    path('member/add/', postMember),
-
-    path('member/auto/', putMember),
-
-    path('list/edit/<int:pk>/', editList),
-    path('member/edit/<int:pk>/', editMember),
-
-    path('list/del/<int:pk>/', delList),    
-    path('member/del/<int:pk>/', delMember),
+    path('member/', AllMember.as_view()),
+    path('member/<int:pk>/', vMember.as_view()),
+    path('member/pay/', MemberByIsPay.as_view()),
+    path('member/user/', MemberByUser.as_view()),
 ]
