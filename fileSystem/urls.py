@@ -1,5 +1,5 @@
 from django.urls import include, path
-from fileSystem.views import File, FileByType, AllFile, SearchFile, FileType, AllFileType
+from fileSystem.views import File, FileByType, AllFile, SearchFile, FileType, AllFileType, UploadFile, UploadFileComplete
 
 urlpatterns = [
     path('file/', AllFile.as_view()),
@@ -9,4 +9,7 @@ urlpatterns = [
 
     path('type/', AllFileType.as_view()),
     path('type/<int:pk>/', FileType.as_view()),
+
+    path('file/upload/complete/', UploadFileComplete.as_view(), name='api_chunked_upload_complete'),
+    path('file/upload/', UploadFile.as_view()),
 ]

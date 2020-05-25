@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import threading
 import time
+from datetime import timedelta
 from os import path
 from django.core.management.utils import get_random_secret_key
 import django_heroku
@@ -47,6 +48,7 @@ INSTALLED_APPS = ['django.contrib.admin',
                   'django.contrib.sessions',
                   'django.contrib.messages',
                   'django.contrib.staticfiles',
+                  'chunked_upload',
                   'corsheaders',
                   'rest_framework',
                   'rest_framework.authtoken',
@@ -147,3 +149,9 @@ ERROR_MESSAGE_404={"detail": "Not found object."}
 ERROR_MESSAGE_400={"detail": "Bad parameters."}
 ERROR_MESSAGE_204={"detail": "Object deleted."}
 ERROR_MESSAGE_201={"detail": "Objects created."}
+ERROR_MESSAGE_DEL={"detail": "Encountered a problem while deleting the file."}
+
+# Upload Settings
+
+CHUNKED_UPLOAD_MAX_BYTES = None
+CHUNKED_UPLOAD_EXPIRATION_DELTA = timedelta(hours=5)
