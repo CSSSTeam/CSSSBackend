@@ -24,3 +24,6 @@ sqlparse==0.3.0
 whitenoise==5.0.1
 django-heroku
 gunicorn
+pyyaml
+uritemplate
+django-chunked-upload

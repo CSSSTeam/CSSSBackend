@@ -1,3 +1,4 @@
+import os
 from django.db.models import Q
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
@@ -5,12 +6,12 @@ from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser
 
 from fileSystem.permission import fileSystemPerm
 from fileSystem.serializers import fileSerializer, typeSerializer, fileSerializerDetail
-from fileSystem.models import file, type
+from fileSystem.models import file, type, MyChunkedUpload
 
+from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
 # ----------------------------TYPE--------------------------------
 
@@ -99,12 +100,16 @@ class File(APIView):
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
-        files.delete()
+        try:
+            os.remove(files.upload)
+            files.delete()
+        except Exception as e:
+            return Response(settings.ERROR_MESSAGE_DEL, status=status.HTTP_404_NOT_FOUND)
+
         return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
 class AllFile(APIView):
     permission_classes = [fileSystemPerm]
-    #parser_classes = [FileUploadParser]
 
     def get(self, request):
         try:
@@ -114,22 +119,6 @@ class AllFile(APIView):
 
         serializer = fileSerializer(files, context={'request': request}, many=True)
         return Response(serializer.data)
-
-    def post(self, request):
-        try:
-            f = request.FILES['upload']
-        except MultiValueDictKeyError:
-            return Response(settings.ERROR_MESSAGE_400, status=status.HTTP_400_BAD_REQUEST)
-
-        request.data['upload'] = str(request.data['upload'])
-        serializer = fileSerializerDetail(data=request.data, context={'request': request})
-
-        if serializer.is_valid():
-            serializer.save()
-            SaveFile(settings.MEDIA_ROOT + request.data['upload'], f)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FileByType(APIView):
     permission_classes = [fileSystemPerm]
@@ -163,13 +152,50 @@ class SearchFile(APIView):
         serializer = fileSerializer(files, many=True)
         return Response(serializer.data)
 
+# ------------ Uploading file -----------
+class UploadFile(ChunkedUploadView):
+
+    model = MyChunkedUpload
+    field_name = 'the_file'
+
+    def check_permissions(self, request):
+        if(fileSystemPerm):
+            pass
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+class UploadFileComplete(ChunkedUploadCompleteView):
+
+    model = MyChunkedUpload
+    field_name = 'the_file'
+
+    def check_permissions(self, request):
+        if(fileSystemPerm):
+            pass
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def on_completion(self, uploaded_file, request):
+        name = uploaded_file.name
+        path = settings.MEDIA_ROOT + name
+
+        f = file.objects.create(name=name, upload=path)
+        f.save()
+
+        SaveFile(path, uploaded_file)
+        pass
+
+    def get_response_data(self, chunked_upload, request):
+        return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
+                            (chunked_upload.filename, chunked_upload.offset))}
+
 # ------------ Save file ------------
 def SaveFile(name, f):
     with open(name, 'wb+') as destination:
         i=0
         for chunk in f.chunks():
             destination.write(chunk)
-            print("Uploading... ["+str(i)+" chunk]")
+            print("Saving... ["+str(i)+" chunk]")
             i+=1
-        print("Uploading... [DONE]")
+        print("File saved! [DONE]")
     return name

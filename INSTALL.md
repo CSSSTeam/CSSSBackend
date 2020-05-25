@@ -41,7 +41,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-## Start up a 
+## Start up a server
 Before starting up python server start up DB server (for exampele XAMPP).
 And after that start python server:
 ```
