@@ -18,6 +18,6 @@ if(table_exists("auth_user")):
     import mysite.generateData as generateData
     generateData.startTreading()
     
-#if(group_exists("English Group 1")):
-    #import mysite.generateTimetable as generateTimetable
-    #generateTimetable.startTreading()
+if(group_exists("English Group 1")):
+    import mysite.generateTimetable as generateTimetable
+    generateTimetable.startTreading()
