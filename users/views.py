@@ -66,13 +66,10 @@ class AdministrationUser(APIView):
 
     def post(self, request):
         newUser = UserCreator(data=request.data, many=True)
-        try:
-            newUser.is_valid(True)
-        except Exception as e:
-            return Response(newUser.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        newUser.save()
-        return Response(request.data ,status=status.HTTP_201_CREATED)
+        if newUser.is_valid():
+            newUser.save()
+            return Response(newUser.data ,status=status.HTTP_201_CREATED)
+        return Response(newUser.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class AdministrationUserGroup(APIView):
     permission_classes = [canAdministionUser]

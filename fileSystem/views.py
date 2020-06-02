@@ -181,8 +181,11 @@ class UploadFileComplete(ChunkedUploadCompleteView):
 
         f = file.objects.create(name=name, upload=path)
         f.save()
+        serializer = fileSerializer(f)
 
         SaveFile(path, uploaded_file)
+
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         pass
 
     def get_response_data(self, chunked_upload, request):
