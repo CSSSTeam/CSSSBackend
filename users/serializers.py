@@ -109,7 +109,6 @@ class UserCreator(serializers.Serializer):
         groups = None
         if 'groups' in validated_data:
             groups = validated_data['groups']
-#        del validated_data['groups']
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         if groups is not None:
@@ -122,5 +121,5 @@ class UserCreator(serializers.Serializer):
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
-    password = serializers.CharField()
+    password = serializers.CharField(min_length=8)
     groups = serializers.ListField(required=False, child=serializers.IntegerField())

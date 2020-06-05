@@ -159,9 +159,7 @@ class UploadFile(ChunkedUploadView):
     field_name = 'the_file'
 
     def check_permissions(self, request):
-        if(fileSystemPerm):
-            pass
-        else:
+        if not fileSystemPerm:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
 class UploadFileComplete(ChunkedUploadCompleteView):
@@ -170,9 +168,7 @@ class UploadFileComplete(ChunkedUploadCompleteView):
     field_name = 'the_file'
 
     def check_permissions(self, request):
-        if(fileSystemPerm):
-            pass
-        else:
+        if not fileSystemPerm:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
     def on_completion(self, uploaded_file, request):
@@ -181,13 +177,13 @@ class UploadFileComplete(ChunkedUploadCompleteView):
 
         f = file.objects.create(name=name, upload=path)
         f.save()
+        serializer = fileSerializer(f)
+        self.response = serializer.data
 
         SaveFile(path, uploaded_file)
-        pass
 
     def get_response_data(self, chunked_upload, request):
-        return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
-                            (chunked_upload.filename, chunked_upload.offset))}
+        return self.response
 
 # ------------ Save file ------------
 def SaveFile(name, f):
