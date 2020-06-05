@@ -3,7 +3,10 @@ from django.db.utils import ProgrammingError
 from django.contrib.auth.models import Group
 
 def table_exists(table_name):
-    return table_name in connection.introspection.table_names()
+    try:
+        return table_name in connection.introspection.table_names()
+    except Exception as e: 
+        return False
 
 def group_exists(group_name):
     flag = True
