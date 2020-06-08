@@ -109,6 +109,7 @@ class UserCreator(serializers.Serializer):
         groups = None
         if 'groups' in validated_data:
             groups = validated_data['groups']
+            del validated_data['groups']
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         if groups is not None:
