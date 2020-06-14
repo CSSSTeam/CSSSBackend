@@ -47,7 +47,9 @@ def updatingTimetable():
         res = conn.getresponse()
         data = json.loads(res.read())
     except Exception as e:
-        print("Cannot get data from plan.zsll.ga")
+        print("Cannot get data from plan.zsll.ga :")
+        print(e)
+        print('')
         return
     HourLesson.objects.all().delete()
 
