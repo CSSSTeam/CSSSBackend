@@ -1,17 +1,17 @@
 import os
-from django.db.models import Q
+
+from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
 from django.conf import settings
+from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
-
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from fileSystem.models import MyChunkedUpload, file, type
 from fileSystem.permission import fileSystemPerm
-from fileSystem.serializers import fileSerializer, typeSerializer, fileSerializerDetail
-from fileSystem.models import file, type, MyChunkedUpload
-
-from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
+from fileSystem.serializers import (fileSerializer, fileSerializerDetail,
+                                    typeSerializer)
 
 # ----------------------------TYPE--------------------------------
 

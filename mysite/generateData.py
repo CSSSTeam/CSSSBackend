@@ -1,8 +1,8 @@
 import threading
 
-from django.utils import timezone
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 from events.models import event
 from fileSystem.models import file

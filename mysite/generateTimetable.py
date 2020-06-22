@@ -2,14 +2,14 @@ import http.client
 import json
 import threading
 import time
-import schedule
-
 from enum import IntEnum
+
+import schedule
 from django.contrib.auth.models import Group
 
-from timetable.models import dayOfWeek, Lesson, HourLesson
-from timetable.views import setTimetable4day, createHourLessons, setTimetable4dayfromAPI
-
+from timetable.models import HourLesson, Lesson, dayOfWeek
+from timetable.views import (createHourLessons, setTimetable4day,
+                             setTimetable4dayfromAPI)
 
 codeGroups = {
     "eng1": Group.objects.get(name="English Group 1").id,

@@ -1,19 +1,20 @@
-from django.conf.urls import url
 from django.conf import settings
-from django.urls import include, path
+from django.conf.urls import url
 from django.conf.urls.static import static
-from django.views.static import serve
+from django.urls import include, path
 from django.views.generic.base import TemplateView
+from django.views.static import serve
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 
-from users import urlsUser as usersUrls
-from users import urlsGroup as groupsUrls
-from fileSystem import urls as fileSystemUrls
+import mysite.subsystems
 from events import urls as eventsUrls
+from fileSystem import urls as fileSystemUrls
+from other import urls as otherURLs
 from timetable import urls as timetableURLs
 from treasurer import urls as treasurerURLs
-from other import urls as otherURLs
+from users import urlsGroup as groupsUrls
+from users import urlsUser as usersUrls
 
 urlpatterns = [
     path('auth/', ObtainAuthToken.as_view()),
@@ -27,5 +28,3 @@ urlpatterns = [
     url(r'^uploaded_files/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="home")
 ]
-
-import mysite.subsystems
