@@ -43,11 +43,12 @@ def changeGroup(obj):
 def updatingTimetable():
     try:
         conn = http.client.HTTPSConnection("plan.zsll.ga")
-        conn.request("GET", "/api/timetable/9/get/1i2")
+        conn.request("GET", "/api/timetable/0/get/1i2")
         res = conn.getresponse()
         data = json.loads(res.read())
     except Exception as e:
-        print("Cannot get data from plan.zsll.ga")
+        print("Cannot get data from plan.zsll.ga :")
+        print(e)
         return
     HourLesson.objects.all().delete()
 
