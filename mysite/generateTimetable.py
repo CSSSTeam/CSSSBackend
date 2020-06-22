@@ -49,7 +49,6 @@ def updatingTimetable():
     except Exception as e:
         print("Cannot get data from plan.zsll.ga :")
         print(e)
-        print('')
         return
     HourLesson.objects.all().delete()
 
