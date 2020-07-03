@@ -28,6 +28,9 @@ def getUploadFolderId(service):
 
 def upload2drive(name, src):
     creds = loadCredencials()
+    if creds is None:
+        print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
+        return None
     service = build('drive', 'v3', credentials=creds)
 
     folderId = getUploadFolderId(service)
@@ -56,14 +59,13 @@ def loadCredencials():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentialsGoogleApi.json', SCOPES)
-            creds = flow.run_local_server(port=0)
+            try:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    'credentialsGoogleApi.json', SCOPES)
+                creds = flow.run_local_server(port=0)
+            except FileNotFoundError:
+                return None
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
     return creds
-
-
-if __name__ == '__main__':
-    upload("file.png", "../media/plik.png")

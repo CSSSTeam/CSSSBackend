@@ -184,6 +184,8 @@ class UploadFileComplete(ChunkedUploadCompleteView):
         path = settings.MEDIA_ROOT + name
         SaveFile(path, uploaded_file)
         downloadUrl = upload2drive(name, path)
+        if downloadUrl is None:
+            downloadUrl = request.build_absolute_uri(settings.MEDIA_URL+name)
         f = file.objects.create(name=name, upload=downloadUrl)
         f.save()
         serializer = fileSerializer(f)
