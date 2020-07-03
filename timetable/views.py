@@ -1,13 +1,15 @@
+import json
+from datetime import timedelta
+
 from django.contrib.auth.models import Group
 from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from timetable.models import HourLesson, Lesson
-from datetime import timedelta
-import json
-from timetable.models import dayOfWeek
-from timetable.permission import canGetTimetable, canSetTimetable, canSetHourLesson
+from rest_framework.response import Response
+
+from timetable.models import HourLesson, Lesson, dayOfWeek
+from timetable.permission import (canGetTimetable, canSetHourLesson,
+                                  canSetTimetable)
 from users.utility import getUser
 
 

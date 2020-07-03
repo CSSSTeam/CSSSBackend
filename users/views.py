@@ -1,15 +1,19 @@
 import json
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.utils.datastructures import MultiValueDictKeyError
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from users.permission import canOperatingInfo, canAdministionOnCurrent, canAdministionUser
-from users.serializers import UserSerializer, UserDisplaySerializer, UserCreator, GroupSerializer, \
-    GroupDisplaySerializer, GroupCreator, ChangePasswordSerializer
-from users.utility import getUser, deleteToken
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from users.permission import (canAdministionOnCurrent, canAdministionUser,
+                              canOperatingInfo)
+from users.serializers import (ChangePasswordSerializer, GroupCreator,
+                               GroupDisplaySerializer, GroupSerializer,
+                               UserCreator, UserDisplaySerializer,
+                               UserSerializer)
+from users.utility import deleteToken, getUser
 
 
 # ---------------------Users--------------------------
@@ -65,14 +69,11 @@ class AdministrationUser(APIView):
         return Response(userSerialized.data)
 
     def post(self, request):
-        newUser = UserCreator(data=request.data, many=True)
-        try:
-            newUser.is_valid(True)
-        except Exception as e:
-            return Response(newUser.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        newUser.save()       
-        return Response(newUser.data ,status=status.HTTP_201_CREATED)
+        serializer = UserCreator(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class AdministrationUserGroup(APIView):
     permission_classes = [canAdministionUser]

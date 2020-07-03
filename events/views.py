@@ -1,18 +1,18 @@
 import calendar
 from datetime import datetime
-from django.utils import timezone
 
-from django.db.models import Q
 from django.conf import settings
+from django.db.models import Q
+from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
-
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from events.permission import EventsPerm
-from events.serializers import eventSerializer, typeSerializer, eventSerializerDetail
 from events.models import event, type
+from events.permission import EventsPerm
+from events.serializers import (eventSerializer, eventSerializerDetail,
+                                typeSerializer)
 
 # ----------------------------TYPE--------------------------------
 

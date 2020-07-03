@@ -1,5 +1,8 @@
 from django.urls import include, path
-from fileSystem.views import File, FileByType, AllFile, SearchFile, FileType, AllFileType, UploadFile, UploadFileComplete
+
+from fileSystem.views import (
+    AllFile, AllFileType, File, FileByType, FileType, SearchFile, UploadFile,
+    UploadFileComplete)
 
 urlpatterns = [
     path('file/', AllFile.as_view()),

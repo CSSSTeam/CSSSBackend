@@ -1,5 +1,7 @@
 from django.urls import include, path
-from treasurer.views import vList, AllList, vMember, AllMember, MemberByIsPay, MemberByUser
+
+from treasurer.views import (AllList, AllMember, MemberByIsPay, MemberByUser,
+                             vList, vMember)
 
 urlpatterns = [
     path('list/', AllList.as_view()),
