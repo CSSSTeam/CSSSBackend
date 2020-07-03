@@ -348,3 +348,5 @@ ASALocalRun/
 *.pyproj
 *.sln
 /media
+/fileSystem/token.pickle
+credentialsGoogleApi.json
