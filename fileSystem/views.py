@@ -13,6 +13,9 @@ from fileSystem.permission import fileSystemPerm
 from fileSystem.serializers import (fileSerializer, fileSerializerDetail,
                                     typeSerializer)
 
+from fileSystem.googleUpload import upload2drive
+
+
 # ----------------------------TYPE--------------------------------
 
 class FileType(APIView):
@@ -47,6 +50,7 @@ class FileType(APIView):
 
         types.delete()
         return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
+
 
 class AllFileType(APIView):
     permission_classes = [fileSystemPerm]
@@ -108,6 +112,7 @@ class File(APIView):
 
         return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
+
 class AllFile(APIView):
     permission_classes = [fileSystemPerm]
 
@@ -119,6 +124,7 @@ class AllFile(APIView):
 
         serializer = fileSerializer(files, context={'request': request}, many=True)
         return Response(serializer.data)
+
 
 class FileByType(APIView):
     permission_classes = [fileSystemPerm]
@@ -136,6 +142,7 @@ class FileByType(APIView):
         serializer = fileSerializerDetail(files, context={'request': request}, many=True)
         return Response(serializer.data)
 
+
 class SearchFile(APIView):
     permission_classes = [fileSystemPerm]
 
@@ -152,9 +159,9 @@ class SearchFile(APIView):
         serializer = fileSerializer(files, many=True)
         return Response(serializer.data)
 
+
 # ------------ Uploading file -----------
 class UploadFile(ChunkedUploadView):
-
     model = MyChunkedUpload
     field_name = 'the_file'
 
@@ -162,8 +169,9 @@ class UploadFile(ChunkedUploadView):
         if not fileSystemPerm:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-class UploadFileComplete(ChunkedUploadCompleteView):
 
+class UploadFileComplete(ChunkedUploadCompleteView):
+    response: str
     model = MyChunkedUpload
     field_name = 'the_file'
 
@@ -174,24 +182,26 @@ class UploadFileComplete(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
-
-        f = file.objects.create(name=name, upload=path)
+        SaveFile(path, uploaded_file)
+        downloadUrl = upload2drive(name, path)
+        if downloadUrl is None:
+            downloadUrl = request.build_absolute_uri(settings.MEDIA_URL+name)
+        f = file.objects.create(name=name, upload=downloadUrl)
         f.save()
         serializer = fileSerializer(f)
         self.response = serializer.data
 
-        SaveFile(path, uploaded_file)
-
     def get_response_data(self, chunked_upload, request):
         return self.response
+
 
 # ------------ Save file ------------
 def SaveFile(name, f):
     with open(name, 'wb+') as destination:
-        i=0
+        i = 0
         for chunk in f.chunks():
             destination.write(chunk)
-            print("Saving... ["+str(i)+" chunk]")
-            i+=1
+            print("Saving... [" + str(i) + " chunk]")
+            i += 1
         print("File saved! [DONE]")
     return name
