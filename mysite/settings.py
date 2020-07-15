@@ -156,3 +156,7 @@ ERROR_MESSAGE_DEL={"detail": "Encountered a problem while deleting the file."}
 
 CHUNKED_UPLOAD_MAX_BYTES = None
 CHUNKED_UPLOAD_EXPIRATION_DELTA = timedelta(hours=5)
+
+#Google Dysk API
+
+GOOGLE_API_CREDENTIALS = 'credentialsGoogleApi.json'
