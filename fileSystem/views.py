@@ -30,7 +30,7 @@ class FileType(APIView):
         serializer = typeSerializer(types, context={'request': request})
         return Response(serializer.data)
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
         try:
             types = type.objects.get(pk=pk)
         except type.DoesNotExist:
@@ -86,7 +86,7 @@ class File(APIView):
         serializer = fileSerializerDetail(files, context={'request': request})
         return Response(serializer.data)
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
         try:
             files = file.objects.get(pk=pk)
         except file.DoesNotExist:
@@ -100,12 +100,12 @@ class File(APIView):
 
     def delete(self, request, pk):
         try:
-            files = file.objects.get(pk=pk)
+            files = file.objects.get(id=pk)
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         try:
-            os.remove(files.upload)
+            #os.remove(files.upload)
             files.delete()
         except Exception as e:
             return Response(settings.ERROR_MESSAGE_DEL, status=status.HTTP_404_NOT_FOUND)
