@@ -1,6 +1,7 @@
+from django.contrib.auth.models import Group
 from django.db import connection
 from django.db.utils import ProgrammingError
-from django.contrib.auth.models import Group
+
 
 def table_exists(table_name):
     try:

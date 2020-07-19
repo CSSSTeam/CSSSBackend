@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from fileSystem.models import file, type
 
+
 class fileSerializerDetail(serializers.ModelSerializer):
     class Meta:
         model = file

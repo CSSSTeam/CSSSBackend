@@ -1,5 +1,7 @@
 from django.urls import include, path
-from users.views import detailsUser, logout, AdministrationUser, currentUserAdmin,AdministrationUserGroup, changePassword
+
+from users.views import (AdministrationUser, AdministrationUserGroup,
+                         changePassword, currentUserAdmin, detailsUser, logout)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

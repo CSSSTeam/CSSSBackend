@@ -15,8 +15,9 @@ import threading
 import time
 from datetime import timedelta
 from os import path
-from django.core.management.utils import get_random_secret_key
+
 import django_heroku
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -154,3 +155,7 @@ ERROR_MESSAGE_DEL={"detail": "Encountered a problem while deleting the file."}
 
 CHUNKED_UPLOAD_MAX_BYTES = None
 CHUNKED_UPLOAD_EXPIRATION_DELTA = timedelta(hours=5)
+
+#Google Dysk API
+
+GOOGLE_API_CREDENTIALS = 'credentialsGoogleApi.json'

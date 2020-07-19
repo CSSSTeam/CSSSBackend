@@ -1,5 +1,7 @@
 from django.urls import include, path
-from events.views import Event, AllEvent, EventByType, EventByMonth, SearchEvent, EventType, AllEventType
+
+from events.views import (AllEvent, AllEventType, Event, EventByMonth,
+                          EventByType, EventType, SearchEvent)
 
 urlpatterns = [
     path('event/', AllEvent.as_view()),

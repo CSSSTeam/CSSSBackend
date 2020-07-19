@@ -1,8 +1,10 @@
-import pickle
 import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+import pickle
+
+from django.conf import settings
 from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file',
@@ -60,7 +62,7 @@ def loadCredencials():
         else:
             try:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentialsGoogleApi.json', SCOPES)
+                    settings.GOOGLE_API_CREDENTIALS, SCOPES)
                 creds = flow.run_local_server(port=0)
             except FileNotFoundError:
                 return None
