@@ -28,7 +28,7 @@ class EventType(APIView):
         serializer = typeSerializer(types, context={'request': request})
         return Response(serializer.data)
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
         try:
             types = type.objects.get(pk=pk)
         except type.DoesNotExist:
@@ -83,7 +83,7 @@ class Event(APIView):
         serializer = eventSerializerDetail(events, context={'request': request})
         return Response(serializer.data)
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
         try:
             events = event.objects.get(pk=pk)
         except event.DoesNotExist:

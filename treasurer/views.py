@@ -14,7 +14,7 @@ from treasurer.serializers import listSerializer, memberSerializer
 class vList(APIView):
     permission_classes = [treasurerPerm]
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
         try:
             lists = List.objects.get(pk=pk)
         except List.DoesNotExist:
@@ -59,7 +59,7 @@ class AllList(APIView):
 class vMember(APIView):
     permission_classes = [treasurerPerm]
 
-    def patch(self, request, pk):
+    def post(self, request, pk):
 
         try:
             members = Member.objects.get(pk=pk)
