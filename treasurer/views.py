@@ -14,9 +14,9 @@ from treasurer.serializers import listSerializer, memberSerializer
 class vList(APIView):
     permission_classes = [treasurerPerm]
 
-    def post(self, request, pk):
+    def post(self, request, id):
         try:
-            lists = List.objects.get(pk=pk)
+            lists = List.objects.get(id=id)
         except List.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -26,9 +26,9 @@ class vList(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
         try:
-            lists = List.objects.get(pk=pk)
+            lists = List.objects.get(id=id)
         except List.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -59,10 +59,10 @@ class AllList(APIView):
 class vMember(APIView):
     permission_classes = [treasurerPerm]
 
-    def post(self, request, pk):
+    def post(self, request, id):
 
         try:
-            members = Member.objects.get(pk=pk)
+            members = Member.objects.get(id=id)
         except Member.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -72,10 +72,10 @@ class vMember(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
 
         try:
-            members = Member.objects.get(pk=pk)
+            members = Member.objects.get(id=id)
         except Member.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -110,7 +110,7 @@ class AllMember(APIView):
             id = int(request.GET['list'])
 
             users = User.objects.all()
-            lists = List.objects.get(pk=id)
+            lists = List.objects.get(id=id)
         except (User.DoesNotExist, List.DoesNotExist):
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
         except (ValueError, MultiValueDictKeyError):

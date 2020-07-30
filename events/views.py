@@ -19,18 +19,18 @@ from events.serializers import (eventSerializer, eventSerializerDetail,
 class EventType(APIView):
     permission_classes = [EventsPerm]
 
-    def get(self, request, pk):
+    def get(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
         serializer = typeSerializer(types, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
@@ -40,9 +40,9 @@ class EventType(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
@@ -73,19 +73,19 @@ class AllEventType(APIView):
 class Event(APIView):
     permission_classes = [EventsPerm]
 
-    def get(self, request, pk):
+    def get(self, request, id):
 
         try:
-            events = event.objects.get(pk=pk)
+            events = event.objects.get(id=id)
         except event.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
     
         serializer = eventSerializerDetail(events, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request, id):
         try:
-            events = event.objects.get(pk=pk)
+            events = event.objects.get(id=id)
         except event.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 
@@ -95,9 +95,9 @@ class Event(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
         try:
-            events = event.objects.get(pk=pk)
+            events = event.objects.get(id=id)
         except event.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
 

@@ -1,12 +1,15 @@
 from django.db import models
 from django.utils import timezone
 from django.db.models.signals import post_migrate
+import uuid
 
 class type (models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
 
 
 class event (models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.TextField()
     dateStart = models.DateTimeField(default=timezone.now)

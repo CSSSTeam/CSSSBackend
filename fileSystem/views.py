@@ -21,18 +21,18 @@ from fileSystem.googleUpload import upload2drive
 class FileType(APIView):
     permission_classes = [fileSystemPerm]
 
-    def get(self, request, pk):
+    def get(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         serializer = typeSerializer(types, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -42,9 +42,9 @@ class FileType(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
         try:
-            types = type.objects.get(pk=pk)
+            types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -77,18 +77,18 @@ class AllFileType(APIView):
 class File(APIView):
     permission_classes = [fileSystemPerm]
 
-    def get(self, request, pk):
+    def get(self, request, id):
         try:
-            files = file.objects.get(pk=pk)
+            files = file.objects.get(id=id)
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         serializer = fileSerializerDetail(files, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request, id):
         try:
-            files = file.objects.get(pk=pk)
+            files = file.objects.get(id=id)
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
@@ -98,9 +98,9 @@ class File(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, id):
         try:
-            files = file.objects.get(pk=pk)
+            files = file.objects.get(id=id)
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
