@@ -103,7 +103,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class UserCreator(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'password', "groups", 'email', 'first_name', 'last_name']
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -112,11 +112,11 @@ class UserCreator(serializers.ModelSerializer):
         groups = None
         if 'groups' in validated_data:
             groups = validated_data['groups']
+            del validated_data['groups']
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         if groups is not None:
             for gr in groups:
-                group = Group.objects.get(id=gr)
-                user.groups.add(group)
+                user.groups.add(gr)
 
         return user

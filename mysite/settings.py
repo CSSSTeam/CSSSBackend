@@ -66,7 +66,6 @@ REST_FRAMEWORK = {
 MIDDLEWARE = ['django.middleware.security.SecurityMiddleware',
               'django.contrib.sessions.middleware.SessionMiddleware',
               'django.middleware.common.CommonMiddleware',
-              'django.middleware.csrf.CsrfViewMiddleware',
               'django.contrib.auth.middleware.AuthenticationMiddleware',
               'django.contrib.messages.middleware.MessageMiddleware',
               'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -97,7 +96,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CSSS',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'password',
         'HOST': '127.0.0.1',  # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
