@@ -1,4 +1,5 @@
 /venv/
+/env/
 /fileSystem/migrations/
 /users/migrations/
 /events/migrations/
