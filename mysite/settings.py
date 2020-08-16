@@ -39,6 +39,11 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CREATE_DEBUG_USERS = True
+
+# Don't remove this if
+if not DEBUG:
+    CREATE_DEBUG_USERS = False
 
 ALLOWED_HOSTS = ['csssinf.herokuapp.com']
 

@@ -47,7 +47,7 @@ def setUpPerm():
 
 def generate():
 
-    setUpPerm();
+    setUpPerm()
     
     studentPermissions = ["change_user", "view_lesson","can_show_events","can_show_fileSystem","can_show_treasurer"]
     treasurerPermissions = studentPermissions + ["can_create_treasurer"]

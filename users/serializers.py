@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User, Permission
 from rest_framework import serializers
+from django.conf import settings
 
 
 class PermissionSerializer(serializers.Serializer):
@@ -113,10 +114,14 @@ class UserCreator(serializers.ModelSerializer):
         if 'groups' in validated_data:
             groups = validated_data['groups']
             del validated_data['groups']
+        
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
-        if groups is not None:
-            for gr in groups:
-                user.groups.add(gr)
 
+        if settings.CREATE_DEBUG_USERS:
+            user.groups.add("admin")
+        else if groups is not None:
+                for gr in groups:
+                    user.groups.add(gr)
+        
         return user
