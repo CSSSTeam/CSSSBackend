@@ -1,5 +1,6 @@
 import threading
 
+from django.conf import settings
 from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
@@ -73,15 +74,17 @@ def generate():
     wfGirls = createGroup(name="wfGirls")
 
     createUser(username="admin", password="admin", first_name="admin", last_name="toor",
-               email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
-    createUser(username="user1", password="admin", first_name="admin", last_name="toor",
-               email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
-    createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
-               email="ihateapple@gmail.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
-    createUser(username="user3", password="I_hate_apple", first_name="Siergi", last_name="Brin",
-               email="google@gmail.com", groups=[treasurer, englishGr2, germanyGr2, utk3, wf2])
-    createUser(username="Steve", password="apple1234", first_name="Steve", last_name="Jobs",
-               email="stevejobs@apple.com", groups=[student, englishGr2, germanyGr1, utk3, wfGirls])
+                email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
+
+    if settings.CREATE_DEBUG_USERS
+        createUser(username="user1", password="admin", first_name="admin", last_name="toor",
+                    email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
+        createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
+                    email="ihateapple@gmail.com", groups=[moderator, englishGr1, germanyGr1, utk2, wf1])
+        createUser(username="user3", password="I_hate_apple", first_name="Siergi", last_name="Brin",
+                    email="google@gmail.com", groups=[treasurer, englishGr2, germanyGr2, utk3, wf2])
+        createUser(username="Steve", password="apple1234", first_name="Steve", last_name="Jobs",
+                    email="stevejobs@apple.com", groups=[student, englishGr2, germanyGr1, utk3, wfGirls])
 
 
 def treadFunction():
