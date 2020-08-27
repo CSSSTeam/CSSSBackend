@@ -46,6 +46,7 @@ if not DEBUG:
     CREATE_DEBUG_USERS = False
 
 ALLOWED_HOSTS = ['csssinf.herokuapp.com']
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 INSTALLED_APPS = ['django.contrib.admin',
@@ -101,9 +102,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CSSS',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',  # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'PASSWORD': 'password',
+        'HOST': '0.0.0.0',  # Or an IP Address that your DB is hosted on
+        'PORT': '3300',
     }
 }
 

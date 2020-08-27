@@ -76,7 +76,7 @@ def generate():
     createUser(username="admin", password="admin", first_name="admin", last_name="toor",
                 email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
 
-    if settings.CREATE_DEBUG_USERS
+    if settings.CREATE_DEBUG_USERS:
         createUser(username="user1", password="admin", first_name="admin", last_name="toor",
                     email="admin@admin.com", groups=[admin, englishGr1, germanyGr2, utk1, wf1])
         createUser(username="Larry", password="I_hate_apple", first_name="Larry", last_name="Page",
