@@ -53,7 +53,7 @@ def loadCredencials():
     return creds
 
 
-def upload2drive(name, src):
+def upload2drive(name, src, obj):
     creds = loadCredencials()
     if creds is None:
         print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
@@ -70,12 +70,14 @@ def upload2drive(name, src):
 
     file = service.files().get(fileId=file.get('id'), fields="webContentLink").execute()
 
-    return file['webContentLink']
+    if file['webContentLink']
+        obj.objects.upload = file['webContentLink']
+        obj.save()
 
 
 
-def upload2driveThread(name,src):
-    thread = myThread(1, "Uploding file to drive", namef=name,  f=src)
+def upload2driveThread(name,src,f):
+    thread = myThread(1, "Uploding file to drive", namef=name,  f=src, obj = f)
     thread.start()
 
 
@@ -86,7 +88,8 @@ class myThread (threading.Thread):
       self.name = name
       self.namef=namef
       self.f=f
+      self.obj=obj
    def run(self):
       print ("Starting " + self.name)
-      upload2drive(message=self.namef,  src=self.f)
+      upload2drive(message=self.namef,  src=self.f, obj=self.obj)
       print ("Exiting " + self.name)

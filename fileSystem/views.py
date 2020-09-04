@@ -183,12 +183,14 @@ class UploadFileComplete(ChunkedUploadCompleteView):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
 
-        SaveFileThread(path, uploaded_file)
-        upload2driveThread(name, path)
-
         f = file.objects.create(name=name, upload=request.build_absolute_uri(settings.MEDIA_URL+name))
         f.save()
         serializer = fileSerializer(f)
+
+        SaveFileThread(path, uploaded_file)
+        upload2driveThread(name, path, f)
+
+        
         self.response = serializer.data
 
     def get_response_data(self, chunked_upload, request):
