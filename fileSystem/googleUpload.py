@@ -1,4 +1,5 @@
 import os.path
+import threading
 import pickle
 
 from django.conf import settings
@@ -27,26 +28,6 @@ def getUploadFolderId(service):
     return file.get('id')
 
 
-def upload2drive(name, src):
-    creds = loadCredencials()
-    if creds is None:
-        print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
-        return None
-    service = build('drive', 'v3', credentials=creds)
-
-    folderId = getUploadFolderId(service)
-    # Call the Drive v3 API
-    file_metadata = {'name': name, 'parents': [folderId]}
-    media = MediaFileUpload(src)
-    file = service.files().create(body=file_metadata,
-                                  media_body=media,
-                                  fields='id').execute()
-
-    file = service.files().get(fileId=file.get('id'), fields="webContentLink").execute()
-
-    return file['webContentLink']
-
-
 def loadCredencials():
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -70,3 +51,42 @@ def loadCredencials():
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
     return creds
+
+
+def upload2drive(name, src):
+    creds = loadCredencials()
+    if creds is None:
+        print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
+        return None
+    service = build('drive', 'v3', credentials=creds)
+
+    folderId = getUploadFolderId(service)
+    # Call the Drive v3 API
+    file_metadata = {'name': name, 'parents': [folderId]}
+    media = MediaFileUpload(src)
+    file = service.files().create(body=file_metadata,
+                                  media_body=media,
+                                  fields='id').execute()
+
+    file = service.files().get(fileId=file.get('id'), fields="webContentLink").execute()
+
+    return file['webContentLink']
+
+
+
+def upload2driveThread(name,src):
+    thread = myThread(1, "Uploding file to drive", namef=name,  f=src)
+    thread.start()
+
+
+class myThread (threading.Thread):
+   def __init__(self, threadID, name, namef, f):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.namef=namef
+      self.f=f
+   def run(self):
+      print ("Starting " + self.name)
+      upload2drive(message=self.namef,  src=self.f)
+      print ("Exiting " + self.name)

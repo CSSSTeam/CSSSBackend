@@ -1,5 +1,3 @@
-import os
-
 from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
 from django.conf import settings
 from django.db.models import Q
@@ -8,12 +6,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from fileSystem.models import MyChunkedUpload, file, type
-from fileSystem.permission import fileSystemPerm
-from fileSystem.serializers import (fileSerializer, fileSerializerDetail,
+from .models import MyChunkedUpload, file, type
+from .permission import fileSystemPerm
+from .serializers import (fileSerializer, fileSerializerDetail,
                                     typeSerializer)
 
-from fileSystem.googleUpload import upload2drive
+from .fileSave import SaveFileThread
+from .googleUpload import upload2driveThread
 
 
 # ----------------------------TYPE--------------------------------
@@ -183,26 +182,14 @@ class UploadFileComplete(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
-        SaveFile(path, uploaded_file)
-        downloadUrl = upload2drive(name, path)
-        if downloadUrl is None:
-            downloadUrl = request.build_absolute_uri(settings.MEDIA_URL+name)
-        f = file.objects.create(name=name, upload=downloadUrl)
+
+        SaveFileThread(path, uploaded_file)
+        upload2driveThread(name, path)
+
+        f = file.objects.create(name=name, upload=request.build_absolute_uri(settings.MEDIA_URL+name))
         f.save()
         serializer = fileSerializer(f)
         self.response = serializer.data
 
     def get_response_data(self, chunked_upload, request):
         return self.response
-
-
-# ------------ Save file ------------
-def SaveFile(name, f):
-    with open(name, 'wb+') as destination:
-        i = 0
-        for chunk in f.chunks():
-            destination.write(chunk)
-            print("Saving... [" + str(i) + " chunk]")
-            i += 1
-        print("File saved! [DONE]")
-    return name
