@@ -2,7 +2,7 @@ import os
 import threading
 
 
-def SaveFile(name, f):
+def SaveFile(name, src):
     with open(name, 'wb+') as destination:
         i = 0
         for chunk in f.chunks():
@@ -11,19 +11,19 @@ def SaveFile(name, f):
             i += 1
         print("File saved! [DONE]")
 
-def SaveFileThread(name,f):
-    thread = myThread(1, "Saving file", namef=name,  f=f)
+def SaveFileThread(name,src):
+    thread = SaveThread(1, "Saving file", namef=name,  src=src)
     thread.start()
 
 
-class myThread (threading.Thread):
-   def __init__(self, threadID, name, namef, f):
+class SaveThread (threading.Thread):
+   def __init__(self, threadID, name, namef, src):
       threading.Thread.__init__(self)
       self.threadID = threadID
       self.name = name
       self.namef=namef
-      self.f=f
+      self.src=src
    def run(self):
       print ("Starting " + self.name)
-      SaveFile(message=self.namef,  f=self.f)
+      SaveFile(namef=self.namef,  src=self.src)
       print ("Exiting " + self.name)

@@ -70,26 +70,26 @@ def upload2drive(name, src, obj):
 
     file = service.files().get(fileId=file.get('id'), fields="webContentLink").execute()
 
-    if file['webContentLink']
+    if file['webContentLink']:
         obj.objects.upload = file['webContentLink']
         obj.save()
 
 
 
-def upload2driveThread(name,src,f):
-    thread = myThread(1, "Uploding file to drive", namef=name,  f=src, obj = f)
+def upload2driveThread(name,src,obj):
+    thread = UploadThread(1, "Uploding file to drive", namef=name,  src=src, obj = obj)
     thread.start()
 
 
-class myThread (threading.Thread):
-   def __init__(self, threadID, name, namef, f):
+class UploadThread (threading.Thread):
+   def __init__(self, threadID, name, namef, src, obj):
       threading.Thread.__init__(self)
       self.threadID = threadID
       self.name = name
       self.namef=namef
-      self.f=f
+      self.src=src
       self.obj=obj
    def run(self):
       print ("Starting " + self.name)
-      upload2drive(message=self.namef,  src=self.f, obj=self.obj)
+      upload2drive(message=self.namef,  src=self.src, obj=self.obj)
       print ("Exiting " + self.name)
