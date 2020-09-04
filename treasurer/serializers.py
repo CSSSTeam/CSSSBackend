@@ -5,7 +5,7 @@ class listSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = List
-        fields = ['pk','name','cost']
+        fields = ['pk','name','cost','date']
         
 class memberSerializer(serializers.ModelSerializer):
 

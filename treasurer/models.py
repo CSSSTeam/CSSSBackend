@@ -1,11 +1,13 @@
 from django.db import models
+from django.utils import timezone
 import uuid
 
 
 class List(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.TextField(default="")
-    cost = models.IntegerField(default=0)
+    name = models.CharField(max_length=50, unique=True)
+    date = models.DateTimeField(default=timezone.now, editable=False)
+    cost = models.FloatField()
 
 
 class Member(models.Model):
