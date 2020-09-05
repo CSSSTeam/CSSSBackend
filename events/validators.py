@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-acceptable_characters = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+acceptable_characters = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
 
 def color(value):
     if len(value) < 6:
@@ -18,4 +18,4 @@ def color(value):
             break
 
     if not all_ok:
-        raise ValidationError('This string must consist of these characters only: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f.')
+        raise ValidationError('This string must consist of these characters only: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F.')

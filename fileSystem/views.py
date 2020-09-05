@@ -6,14 +6,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import MyChunkedUpload, file, type
-from .permission import fileSystemPerm
-from .serializers import (fileSerializer, fileSerializerDetail,
-                                    typeSerializer)
+from users.utility import getUser
 
 from .fileSave import SaveFileThread
 from .googleUpload import upload2driveThread
-
+from .models import MyChunkedUpload, file, type
+from .permission import fileSystemPerm
+from .serializers import fileSerializer, fileSerializerDetail, typeSerializer
 
 # ----------------------------TYPE--------------------------------
 
@@ -183,7 +182,7 @@ class UploadFileComplete(ChunkedUploadCompleteView):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
 
-        f = file.objects.create(name=name, upload=request.build_absolute_uri(settings.MEDIA_URL+name))
+        f = file.objects.create(name=name, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
         f.save()
         serializer = fileSerializer(f)
 
