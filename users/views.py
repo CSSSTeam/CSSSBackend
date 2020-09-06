@@ -6,6 +6,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
 from users.permission import (canAdministionOnCurrent, canAdministionUser,
                               canOperatingInfo)
@@ -26,7 +27,15 @@ class currentUserAdmin(APIView):
         return Response(userSerialized.data)
 
     def delete(self, request, pk):
-        User.objects.get(id=pk).delete()
+        try:
+            user = User.objects.get(id=pk)
+            token = Token.objects.get(user=user)
+        except Exception as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        token.delete()
+        user.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class detailsUser(APIView):

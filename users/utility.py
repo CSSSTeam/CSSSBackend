@@ -1,7 +1,6 @@
 from rest_framework.authtoken.models import Token
 
-
-def getUser(request):
+def getUserObject(request):
     tok = request.headers.get('Authorization')
     if tok is None:
         return None
@@ -9,22 +8,19 @@ def getUser(request):
         user_object = Token.objects.get(key=tok.split(' ',1)[-1])
     except Token.DoesNotExist:
         return None
-    if user_object is None:
-        return None
-    return user_object.user
+    return user_object
+
+def getUser(request):
+    user_object = getUserObject(request)
+    if user_object:
+        return user_object.user
+    return None
 
 
 def deleteToken(request):
-    tok = request.headers.get('Authorization')
-    if tok is None:
-        return
-    try:
-        user_object = Token.objects.get(key=tok.split(' ',1)[-1])
-    except Token.DoesNotExist:
-        return
-    if user_object is None:
-        return
-    user_object.delete()
+    user_object = getUserObject(request)
+    if user_object:
+        getUserObject(request).delete()
 
 
 def userHasPerm(request, permission):
@@ -35,3 +31,4 @@ def userHasPerm(request, permission):
     if user.has_perm(permission):
         return True
     return False
+
