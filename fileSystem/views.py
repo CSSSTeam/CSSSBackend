@@ -10,10 +10,10 @@ from users.utility import getUser
 
 from .fileSave import SaveFileThread
 from .googleUpload import upload2driveThread
-from .models import MyChunkedUpload, file, type
+from .models import MyChunkedUpload, file, type as fileType
 from .permission import fileSystemPerm
 from .serializers import fileSerializer, fileSerializerDetail, typeSerializer
-
+import os
 # ----------------------------TYPE--------------------------------
 
 class FileType(APIView):
@@ -21,8 +21,8 @@ class FileType(APIView):
 
     def get(self, request, id):
         try:
-            types = type.objects.get(id=id)
-        except type.DoesNotExist:
+            types = fileType.objects.get(id=id)
+        except fileType.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         serializer = typeSerializer(types, context={'request': request})
@@ -30,8 +30,8 @@ class FileType(APIView):
 
     def post(self, request, id):
         try:
-            types = type.objects.get(id=id)
-        except type.DoesNotExist:
+            types = fileType.objects.get(id=id)
+        except fileType.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         serializer = typeSerializer(types, data=request.data, context={'request': request}, partial=True)
@@ -42,8 +42,8 @@ class FileType(APIView):
 
     def delete(self, request, id):
         try:
-            types = type.objects.get(id=id)
-        except type.DoesNotExist:
+            types = fileType.objects.get(id=id)
+        except fileType.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         types.delete()
@@ -55,8 +55,8 @@ class AllFileType(APIView):
 
     def get(self, request):
         try:
-            types = type.objects.all()
-        except type.DoesNotExist:
+            types = fileType.objects.all()
+        except fileType.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
         serializer = typeSerializer(types, context={'request': request}, many=True)
@@ -181,8 +181,10 @@ class UploadFileComplete(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
+        description = request.POST['description']
+        type = fileType.objects.get(id=request.POST['type'])
 
-        f = file.objects.create(name=name, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
+        f = file.objects.create(name=name,description=description,fileType=type, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
         f.save()
         serializer = fileSerializer(f)
 
