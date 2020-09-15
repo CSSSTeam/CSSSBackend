@@ -91,6 +91,6 @@ class UploadThread (threading.Thread):
       self.obj=obj
    def run(self):
       print ("Starting " + self.name)
-      upload2drive(message=self.namef,  src=self.src, obj=self.obj)
+      upload2drive(name=self.namef,  src=self.src, obj=self.obj)
       print ("Exiting " + self.name)
       
