@@ -45,7 +45,14 @@ class EventType(APIView):
             types = type.objects.get(id=id)
         except type.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404,status=status.HTTP_404_NOT_FOUND)
+        
+        events = None
+        try:
+            events = event.objects.filter(eventType=id)
+        except event.DoesNotExist:
+            pass
 
+        events.delete()
         types.delete()
         return Response(settings.ERROR_MESSAGE_204,status=status.HTTP_204_NO_CONTENT)
 

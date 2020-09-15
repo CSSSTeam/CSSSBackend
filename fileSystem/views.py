@@ -46,6 +46,13 @@ class FileType(APIView):
         except fileType.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
+        files = None
+        try:
+            files = file.objects.get(fileType=id)
+        except file.DoesNotExist:
+            pass
+
+        files.delete()
         types.delete()
         return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
@@ -182,9 +189,9 @@ class UploadFileComplete(ChunkedUploadCompleteView):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
         description = request.POST['description']
-        type = fileType.objects.get(id=request.POST['type'])
+        fileType_id = request.POST['type']
 
-        f = file.objects.create(name=name,description=description,fileType=type, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
+        f = file.objects.create(name=name, description=description, fileType=fileType_id, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
         f.save()
         serializer = fileSerializer(f)
 
