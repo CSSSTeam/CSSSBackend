@@ -1,12 +1,15 @@
+import os
 import os.path
-import threading
 import pickle
+import threading
 
 from django.conf import settings
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+
+from .models import file
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file',
           'https://www.googleapis.com/auth/drive.metadata']
@@ -53,6 +56,16 @@ def loadCredencials():
     return creds
 
 
+def saveFile(name, src):
+    with open(name, 'wb+') as destination:
+        i = 0
+        for chunk in src.chunks():
+            destination.write(chunk)
+            print("Saving... [" + str(i) + " chunk]")
+            i += 1
+        print("File saved! [DONE]")
+
+
 def upload2drive(name, src, obj):
     creds = loadCredencials()
     if creds is None:
@@ -64,33 +77,36 @@ def upload2drive(name, src, obj):
     # Call the Drive v3 API
     file_metadata = {'name': name, 'parents': [folderId]}
     media = MediaFileUpload(src)
-    file = service.files().create(body=file_metadata,
+    files = service.files().create(body=file_metadata,
                                   media_body=media,
                                   fields='id').execute()
 
-    file = service.files().get(fileId=file.get('id'), fields="webContentLink").execute()
-
-    if file['webContentLink']:
-        obj.objects.upload = file['webContentLink']
+    files = service.files().get(fileId=files.get('id'), fields="webContentLink").execute()
+    print(files)
+    if files['webContentLink']:
+        obj.upload = files['webContentLink']
         obj.save()
 
 
+def uploadFile(name,src,obj,uploaded_file):
+    saveFile(src, uploaded_file)
+    upload2drive(name, src, obj)
 
-def upload2driveThread(name,src,obj):
-    thread = UploadThread(1, "Uploding file to drive", namef=name,  src=src, obj = obj)
+def uploadFileThread(name,src,obj,uploaded_file):
+    thread = UploadThread(1, "Uploding file", namef=name,  src=src, obj = obj, uploaded_file = uploaded_file)
     thread.start()
 
 
 class UploadThread (threading.Thread):
-   def __init__(self, threadID, name, namef, src, obj):
+   def __init__(self, threadID, name, namef, src, obj, uploaded_file):
       threading.Thread.__init__(self)
       self.threadID = threadID
       self.name = name
       self.namef=namef
       self.src=src
       self.obj=obj
+      self.uploaded_file=uploaded_file
    def run(self):
       print ("Starting " + self.name)
-      upload2drive(name=self.namef,  src=self.src, obj=self.obj)
+      uploadFile(name=self.namef,  src=self.src, obj=self.obj, uploaded_file=self.uploaded_file)
       print ("Exiting " + self.name)
-      

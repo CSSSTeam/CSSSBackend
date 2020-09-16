@@ -351,3 +351,4 @@ ASALocalRun/
 /media
 /fileSystem/token.pickle
 credentialsGoogleApi.json
+token.pickle

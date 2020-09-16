@@ -8,8 +8,7 @@ from rest_framework.views import APIView
 
 from users.utility import getUser
 
-from .fileSave import SaveFileThread
-from .googleUpload import upload2driveThread
+from .googleUpload import uploadFileThread
 from .models import MyChunkedUpload, file, type as fileType
 from .permission import fileSystemPerm
 from .serializers import fileSerializer, fileSerializerDetail, typeSerializer
@@ -188,15 +187,19 @@ class UploadFileComplete(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         name = uploaded_file.name
         path = settings.MEDIA_ROOT + name
-        description = request.POST['description']
-        fileType_id = request.POST['type']
 
-        f = file.objects.create(name=name, description=description, fileType=fileType_id, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
+        try:
+            description = request.POST['description']
+        except MultiValueDictKeyError:
+            pass
+        
+        types = fileType.objects.get(id=request.POST['type'])
+
+        f = file.objects.create(name=name, description=description, fileType=types, upload=request.build_absolute_uri(settings.MEDIA_URL+name), author=getUser(request))
         f.save()
         serializer = fileSerializer(f)
 
-        SaveFileThread(path, uploaded_file)
-        upload2driveThread(name, path, f)
+        uploadFileThread(name, path, f, uploaded_file)
 
         
         self.response = serializer.data
