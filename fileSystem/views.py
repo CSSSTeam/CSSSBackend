@@ -8,11 +8,10 @@ from rest_framework.views import APIView
 
 from users.utility import getUser
 
-from .googleUpload import uploadFileThread
+from .googleUpload import uploadFileThread, deleteFileThread
 from .models import MyChunkedUpload, file, type as fileType
 from .permission import fileSystemPerm
 from .serializers import fileSerializer, fileSerializerDetail, typeSerializer
-import os
 # ----------------------------TYPE--------------------------------
 
 class FileType(APIView):
@@ -108,13 +107,8 @@ class File(APIView):
         except file.DoesNotExist:
             return Response(settings.ERROR_MESSAGE_404, status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            if os.path.exists(files.upload):
-                os.remove(files.upload)
-            files.delete()
-        except Exception as e:
-            return Response(settings.ERROR_MESSAGE_DEL, status=status.HTTP_404_NOT_FOUND)
-
+        deleteFileThread(files)
+        files.delete()
         return Response(settings.ERROR_MESSAGE_204, status=status.HTTP_204_NO_CONTENT)
 
 

@@ -67,6 +67,8 @@ def saveFile(name, src):
 
 
 def upload2drive(name, src, obj):
+    print("Uploading to google drive ...")
+
     creds = loadCredencials()
     if creds is None:
         print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
@@ -80,11 +82,12 @@ def upload2drive(name, src, obj):
     files = service.files().create(body=file_metadata,
                                   media_body=media,
                                   fields='id').execute()
-
-    files = service.files().get(fileId=files.get('id'), fields="webContentLink").execute()
-    print(files)
+    f_id = files.get('id')
+    files = service.files().get(fileId=f_id, fields="webContentLink").execute()
+    
     if files['webContentLink']:
         obj.upload = files['webContentLink']
+        obj.fileId = f_id
         obj.save()
 
 
@@ -109,4 +112,40 @@ class UploadThread (threading.Thread):
    def run(self):
       print ("Starting " + self.name)
       uploadFile(name=self.namef,  src=self.src, obj=self.obj, uploaded_file=self.uploaded_file)
+      print ("Exiting " + self.name)
+
+#-----------------------------------------------------------------------------------------------
+
+
+def deleteFile(obj):
+    if obj.fileId:
+        print("Deleting on google drive...")
+
+        creds = loadCredencials()
+        if creds is None:
+            print("Not found credentialsGoogleApi.json. Sorry I cannot send it to Google Drive")
+            return None
+        service = build('drive', 'v3', credentials=creds)
+
+        service.files().delete(fileId=obj.fileId).execute()
+    
+    print("Deleting localy...")
+    # del it local
+    if os.path.exists(obj.upload):
+        os.remove(obj.upload)
+
+def deleteFileThread(obj):
+    thread = DeleteThread(1, "Deleting file", obj = obj)
+    thread.start()
+
+
+class DeleteThread (threading.Thread):
+   def __init__(self, threadID, name, obj):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.obj=obj
+   def run(self):
+      print ("Starting " + self.name)
+      deleteFile(obj=self.obj)
       print ("Exiting " + self.name)

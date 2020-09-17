@@ -13,6 +13,7 @@ class file(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(default='', blank=True, null=True)
     fileType = models.ForeignKey('type', on_delete=models.CASCADE)
+    fileId = models.CharField(max_length=50, editable=False, blank=True, null=True)
     upload = models.CharField(unique=True, max_length=255)
     date = models.DateTimeField(default=timezone.now, editable=False)
     author = models.ForeignKey('users.User', on_delete=models.CASCADE)
