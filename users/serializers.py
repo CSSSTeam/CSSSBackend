@@ -1,5 +1,7 @@
-from django.contrib.auth.models import Group, User, Permission
+from django.contrib.auth.models import Group, Permission
 from rest_framework import serializers
+
+from .models import User
 
 
 class PermissionSerializer(serializers.Serializer):
@@ -73,6 +75,7 @@ class UserDisplaySerializer(serializers.Serializer):
     last_name = serializers.CharField()
     email = serializers.EmailField()
     groups = GroupSerializer(many=True)
+    hasChangedPass = serializers.BooleanField()
 
 
 class UserSerializer(serializers.Serializer):

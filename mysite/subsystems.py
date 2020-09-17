@@ -18,7 +18,7 @@ def group_exists(group_name):
     return flag
 
 
-if(table_exists("auth_user")):
+if(table_exists("users_user")):
     import mysite.generateData as generateData
     generateData.startTreading()
     

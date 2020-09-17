@@ -15,7 +15,7 @@ class file(models.Model):
     fileType = models.ForeignKey('type', on_delete=models.CASCADE)
     upload = models.CharField(unique=True, max_length=255)
     date = models.DateTimeField(default=timezone.now, editable=False)
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
 
 
 MyChunkedUpload = ChunkedUpload

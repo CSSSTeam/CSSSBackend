@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,6 +7,7 @@ from rest_framework.views import APIView
 from treasurer.models import List, Member
 from treasurer.permission import treasurerPerm
 from treasurer.serializers import listSerializer, memberSerializer
+from users.models import User
 
 # ----------------------------LIST--------------------------------
 

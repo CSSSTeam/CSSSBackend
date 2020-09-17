@@ -1,12 +1,12 @@
 import json
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
 
 from users.permission import (canAdministionOnCurrent, canAdministionUser,
                               canOperatingInfo)
@@ -15,6 +15,8 @@ from users.serializers import (ChangePasswordSerializer, GroupCreator,
                                UserCreator, UserDisplaySerializer,
                                UserSerializer)
 from users.utility import deleteToken, getUser
+
+from .models import User
 
 
 # ---------------------Users--------------------------
@@ -64,6 +66,7 @@ class changePassword(APIView):
             return Response({"error": "New Password is different"}, status=status.HTTP_417_EXPECTATION_FAILED)
 
         user.set_password(changePassword.validated_data['newPass'])
+        user.hasChangedPass = True
         user.save()
         return Response(status=status.HTTP_200_OK)
 
