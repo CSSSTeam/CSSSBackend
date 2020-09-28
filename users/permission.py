@@ -5,20 +5,20 @@ from users.utility import getUser, userHasPerm
 
 class canAdministionOnCurrent(permissions.BasePermission):
     def has_permission(self, request, view):
-        if userHasPerm(request, "auth.view_user") and request.method == "GET":
+        if userHasPerm(request, "users.view_user") and request.method == "GET":
             return True
-        if userHasPerm(request, "auth.delete_user") and request.method == "DELETE":
+        if userHasPerm(request, "users.delete_user") and request.method == "DELETE":
             return True
         return False
 
 
 class canAdministionUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        if userHasPerm(request, "auth.view_user") and request.method == "GET":
+        if userHasPerm(request, "users.view_user") and request.method == "GET":
             return True
-        if userHasPerm(request, "auth.add_user") and request.method == "POST":
+        if userHasPerm(request, "users.add_user") and request.method == "POST":
             return True
-        if userHasPerm(request, "auth.delete_user") and request.method == "DELETE":
+        if userHasPerm(request, "users.delete_user") and request.method == "DELETE":
             return True
         return False
 

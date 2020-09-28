@@ -61,7 +61,7 @@ def updatingTimetable():
 
 
 def treadFunction():
-    #updatingTimetable()
+    updatingTimetable()
     schedule.every(16).hours.do(updatingTimetable)
 
     while True:
